@@ -1,8 +1,14 @@
+import { locales } from "@/content/i18n";
 import { ImageResponse } from "next/og";
 
 export const alt = "Utkir — Full-Stack Developer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+// Статический экспорт: картинку надо отрендерить для каждого языка заранее.
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 // Только латиница: шрифт по умолчанию в ImageResponse не содержит кириллицы.
 export default function OG() {

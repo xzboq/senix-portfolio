@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Utkir — Full-Stack Developer</title>
+    <!-- Статический хостинг не умеет middleware: язык выбираем здесь, в браузере. -->
+    <script>
+      (function () {
+        var locales = ["ru", "uz", "en"];
+        var pick = "en";
+        var saved = (document.cookie.match(/(?:^|; )NEXT_LOCALE=([^;]*)/) || [])[1];
+        if (saved && locales.indexOf(saved) > -1) pick = saved;
+        else {
+          var langs = navigator.languages || [navigator.language || "en"];
+          for (var i = 0; i < langs.length; i++) {
+            var tag = String(langs[i]).toLowerCase().split("-")[0];
+            if (locales.indexOf(tag) > -1) { pick = tag; break; }
+          }
+        }
+        var base = location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
+        location.replace(base + "/" + pick + "/");
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p>Choose a language:</p>
+      <ul>
+        <li><a href="./ru/">Русский</a></li>
+        <li><a href="./uz/">Oʻzbekcha</a></li>
+        <li><a href="./en/">English</a></li>
+      </ul>
+    </noscript>
+  </body>
+</html>

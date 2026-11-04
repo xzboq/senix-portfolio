@@ -2,6 +2,9 @@ import type { MetadataRoute } from "next";
 import { SITE_URL, locales } from "@/content/i18n";
 import { projects } from "@/content/projects";
 
+// Статический экспорт: файл генерируется один раз на сборке.
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = ["", ...projects.map((p) => `/projects/${p.slug}`)];
   return paths.flatMap((path) =>
