@@ -1,0 +1,103 @@
+import Image from "next/image";
+import Link from "next/link";
+import type { Locale } from "@/content/i18n";
+import { fmt, type Dict } from "@/content/dict";
+import { projects, type Project } from "@/content/projects";
+import { analyzeText, assess, signalText } from "@/lib/engine";
+import shot from "@/assets/wishpool.jpg";
+
+function Visual({ p, lang, d }: { p: Project; lang: Locale; d: Dict }) {
+  if (p.slug === "kiber-yordamchi") {
+    const a = assess(analyzeText(d.sample[0]));
+    return (
+      <div className="viz viz-verdict" aria-hidden="true">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+          <span className="viz-big">{a.verdict}</span>
+          <span>{a.score}/100</span>
+        </div>
+        {a.evidence.slice(0, 3).map((e) => (
+          <div key={e.id} className="row">
+            <span>{e.id}</span>
+            <span>{signalText(e, lang)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (p.slug === "senixsearch") {
+    const s = d.lab.search;
+    return (
+      <div className="viz viz-lines" aria-hidden="true">
+        <div className="ln">
+          <b>@xznow</b>
+          <span>t.me <span className="ok-t">✓</span> · Fragment <span className="ok-t">—</span></span>
+          <span className="ok-t">{s.claimable}</span>
+        </div>
+        <div className="ln">
+          <b>@telegram</b>
+          <span>t.me <span className="no-t">✗</span></span>
+          <span className="no-t">{s.notClaimable}</span>
+        </div>
+        <div className="ln">
+          <b>a?b?c</b>
+          <span>mask</span>
+          <span>{fmt(s.maskCount, { n: 676 })}</span>
+        </div>
+      </div>
+    );
+  }
+  if (p.slug === "wishpool") {
+    return (
+      <div className="viz viz-shot">
+        <Image src={shot} alt={d.lab.wish.shot} sizes="(min-width: 1024px) 400px, 100vw" placeholder="blur" />
+      </div>
+    );
+  }
+  return (
+    <div className="viz viz-flow" aria-hidden="true">
+      <div><span>GPS / search →</span> Open-Meteo</div>
+      <div><span>→</span> TanStack Query <span>⇄</span> AsyncStorage</div>
+      <div><span>→</span> Zustand <span>(units · lang · theme)</span></div>
+      <div><span>→</span> Home · Hourly · Daily</div>
+    </div>
+  );
+}
+
+export function Works({ lang, d }: { lang: Locale; d: Dict }) {
+  return (
+    <section id="works" className="sec" aria-labelledby="works-h">
+      <div className="wrap">
+        <div className="sec-head">
+          <span className="n">01</span>
+          <h2 id="works-h">{d.works.title}</h2>
+          <p>{d.works.lead}</p>
+        </div>
+        <ul className="works">
+          {projects.map((p) => {
+            const t = p.text[lang];
+            return (
+              <li key={p.slug} className="rv">
+                <Link href={`/${lang}/projects/${p.slug}`} className="work">
+                  <span className="work-num">{p.num}</span>
+                  <div className="work-main">
+                    <h3 className="work-name">
+                      <span>{p.name}</span>
+                      <span className="arrow" aria-hidden="true">↗</span>
+                    </h3>
+                    <p className="work-tag">{t.tagline}</p>
+                    <div className="work-meta">
+                      <span className="stamp" data-k={p.statusKey}>{d.works.status[p.statusKey]}</span>
+                      <span className="label">{t.kind}</span>
+                    </div>
+                    <p className="stack">{p.stack.map((s) => <span key={s}>{s}</span>)}</p>
+                  </div>
+                  <Visual p={p} lang={lang} d={d} />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  );
+}
