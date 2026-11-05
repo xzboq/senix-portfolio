@@ -547,6 +547,75 @@ kbd {
 .viz-flow div { border: 1px solid var(--line2); border-radius: 8px; padding: 7px 10px; background: var(--panel); }
 .viz-flow span { color: var(--accent-ink); }
 
+.viz-drift { display: grid; gap: 12px; align-content: start; }
+.vd-head { display: flex; justify-content: space-between; color: var(--mute); font-size: 0.6875rem; letter-spacing: 0.06em; }
+.vd-head span:first-child { color: var(--accent-ink); }
+.vd-row { display: grid; grid-template-columns: 64px 1fr 64px; gap: 10px; align-items: center; font-size: 0.75rem; }
+.vd-row span:last-child { text-align: right; color: var(--mute); }
+.vd-row i { height: 8px; border-radius: 99px; background: var(--line2); overflow: hidden; }
+.vd-row b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--cyan)); }
+.vd-zone { margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 0.75rem; color: var(--mute); }
+.viz-fresh { display: grid; grid-template-rows: 1fr auto; gap: 10px; background: linear-gradient(180deg, color-mix(in srgb, #ffc800 8%, var(--bg)), var(--bg)); }
+.vf-glasses { display: flex; align-items: flex-end; justify-content: center; gap: 18px; padding-top: 6px; }
+.glass {
+  width: 38px; position: relative; border: 2px solid var(--line2); border-top: 0; border-radius: 4px 4px 10px 10px;
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+  background: linear-gradient(180deg, transparent 14%, var(--c) 14%);
+}
+.glass::after { content: ""; position: absolute; left: 22%; top: 28%; width: 5px; height: 5px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); box-shadow: 9px 12px 0 -1px rgba(255, 255, 255, 0.4), 3px 26px 0 0 rgba(255, 255, 255, 0.35); }
+.vf-bar { display: flex; justify-content: space-between; gap: 8px; font-size: 0.6875rem; color: var(--mute); }
+.vf-bar i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); margin-right: 7px; box-shadow: 0 0 8px var(--ok); }
+
+/* ещё проекты */
+.more { margin-top: clamp(40px, 6vw, 64px); }
+.more-head { display: grid; gap: 6px; margin-bottom: 18px; }
+.more-head h3 { font-weight: 750; font-size: clamp(1.4rem, 2.3vw, 1.8rem); letter-spacing: -0.03em; }
+.more-head p { color: var(--mute); max-width: 62ch; }
+.more-list { display: grid; gap: 12px; }
+@media (min-width: 700px) { .more-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .more-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.more-item {
+  display: grid; gap: 10px; align-content: start; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 75%, transparent); transition: border-color 0.2s;
+}
+.more-item:hover { border-color: var(--line2); }
+.more-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.more-top b { font-weight: 700; font-size: 1.125rem; letter-spacing: -0.02em; }
+.more-item p { color: var(--mute); font-size: 0.9375rem; line-height: 1.5; }
+.more-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.more-foot .tags { margin-top: 0; }
+.more-foot .tlink { font-size: 0.8125rem; }
+
+/* лаборатории новых проектов */
+.cars { display: flex; flex-wrap: wrap; gap: 6px; }
+.drift-card { gap: 14px; }
+.drift-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.drift-head strong { font-size: 1.5rem; letter-spacing: -0.03em; }
+.drift-head .mono { color: var(--mute); font-size: 0.8125rem; }
+.stat { display: grid; gap: 6px; }
+.stat-top { display: flex; justify-content: space-between; gap: 10px; }
+.stat-top .mono { font-size: 0.8125rem; }
+.stat-bar { position: relative; height: 10px; border-radius: 99px; background: var(--line2); }
+.stat-bar i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--cyan)); transition: width 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.stat-bar b { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--fg); border-radius: 2px; }
+.zones { min-width: 460px; }
+.zones td:not(:first-child), .zones th:not(:first-child) { text-align: right; }
+.zones td:last-child { color: var(--accent-ink); }
+.medal { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+.medal[data-m="0"] { background: #c47a3c; }
+.medal[data-m="1"] { background: #b8c0ca; }
+.medal[data-m="2"] { background: #f2c94c; }
+.clock { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.clock-time { font: 800 clamp(2.5rem, 6vw, 3.5rem)/1 var(--font-mono); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.fresh-badge {
+  display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line2);
+  font: 500 0.75rem var(--font-mono); color: var(--bad);
+}
+.fresh-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.fresh-badge[data-open] { color: var(--ok); }
+.range { width: 100%; accent-color: var(--accent); height: 28px; cursor: pointer; }
+.range-scale { display: flex; justify-content: space-between; font: 400 0.6875rem var(--font-mono); color: var(--dim); }
+
 /* ───────── подход ───────── */
 .method-grid { display: grid; gap: 16px; }
 @media (min-width: 800px) { .method-grid { grid-template-columns: 1fr 1fr; } }

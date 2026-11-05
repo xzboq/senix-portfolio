@@ -56,7 +56,7 @@ export function Method({ lang, d }: { lang: Locale; d: Dict }) {
                     <small>{r.group === "primary" ? d.toolbox.primary : d.toolbox.additional}</small>
                   </th>
                   {r.empty ? (
-                    <td colSpan={5} className="hatch">{d.toolbox.empty}</td>
+                    <td colSpan={d.toolbox.projects.length} className="hatch">{d.toolbox.empty}</td>
                   ) : (
                     r.cells.map((c, i) => (
                       <td key={i}>

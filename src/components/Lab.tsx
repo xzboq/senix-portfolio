@@ -16,6 +16,8 @@ const KiberLab = dynamic(() => import("./labs/KiberLab"), { ssr: false, loading:
 const SearchLab = dynamic(() => import("./labs/SearchLab"), { ssr: false, loading: Skeleton });
 const WishLab = dynamic(() => import("./labs/WishLab"), { ssr: false, loading: Skeleton });
 const WeatherLab = dynamic(() => import("./labs/WeatherLab"), { ssr: false, loading: Skeleton });
+const DriftLab = dynamic(() => import("./labs/DriftLab"), { ssr: false, loading: Skeleton });
+const FreshLab = dynamic(() => import("./labs/FreshLab"), { ssr: false, loading: Skeleton });
 
 export function Lab({ slug, lang, lab, shared }: { slug: Slug; lang: Locale; lab: Dict["lab"]; shared: LabProps<unknown>["shared"] }) {
   return (
@@ -24,6 +26,8 @@ export function Lab({ slug, lang, lab, shared }: { slug: Slug; lang: Locale; lab
       {slug === "senixsearch" && <SearchLab lang={lang} t={lab.search} shared={shared} />}
       {slug === "wishpool" && <WishLab t={lab.wish} shared={shared} />}
       {slug === "weather" && <WeatherLab t={lab.weather} shared={shared} />}
+      {slug === "drift-chirchik" && <DriftLab lang={lang} t={lab.drift} shared={shared} />}
+      {slug === "fresh-chirchik" && <FreshLab t={lab.fresh} shared={shared} />}
     </OnView>
   );
 }

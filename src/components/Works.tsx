@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/content/i18n";
 import { fmt, type Dict } from "@/content/dict";
-import { projects, type Project } from "@/content/projects";
+import { DRIFT_CARS, DRIFT_MAX, DRIFT_ZONES, kmh } from "@/content/drift";
+import { more, projects, type Project } from "@/content/projects";
 import { analyzeText, assess, signalText } from "@/lib/engine";
 import shot from "@/assets/wishpool.jpg";
 import { SecHead } from "./SecHead";
@@ -43,6 +44,40 @@ function Visual({ p, lang, d }: { p: Project; lang: Locale; d: Dict }) {
           <b>a?b?c</b>
           <span>mask</span>
           <span>{fmt(s.maskCount, { n: 676 })}</span>
+        </div>
+      </div>
+    );
+  }
+  if (p.slug === "drift-chirchik") {
+    const picks = ["nexia", "gentra", "camaro"].map((id) => DRIFT_CARS.find((c) => c.id === id)!);
+    return (
+      <div className="viz viz-drift" aria-hidden="true">
+        <div className="vd-head">
+          <span>GARAGE</span>
+          <span>18 cars · 9 zones</span>
+        </div>
+        {picks.map((c) => (
+          <div key={c.id} className="vd-row">
+            <span>{c.name}</span>
+            <i><b style={{ width: `${(c.v / DRIFT_MAX.v) * 100}%` }} /></i>
+            <span>{kmh(c.v)} km/h</span>
+          </div>
+        ))}
+        <div className="vd-zone">◎ {DRIFT_ZONES[0].name[lang]} · {DRIFT_ZONES[0].medals[2].toLocaleString(lang)}</div>
+      </div>
+    );
+  }
+  if (p.slug === "fresh-chirchik") {
+    return (
+      <div className="viz viz-fresh" aria-hidden="true">
+        <div className="vf-glasses">
+          {["#ff9500", "#a8d608", "#e8456b", "#ffc800"].map((c, i) => (
+            <span key={c} className="glass" style={{ ["--c" as string]: c, height: `${i % 2 ? 46 : 64}%` }} />
+          ))}
+        </div>
+        <div className="vf-bar">
+          <span><i />08:00–00:00 · UTC+5</span>
+          <span>tg ⇄ web</span>
         </div>
       </div>
     );
@@ -100,6 +135,36 @@ export function Works({ lang, d }: { lang: Locale; d: Dict }) {
             );
           })}
         </ul>
+
+        <div className="more rv">
+          <div className="more-head">
+            <h3>{d.more.title}</h3>
+            <p>{d.more.lead}</p>
+          </div>
+          <ul className="more-list">
+            {more.map((m) => {
+              const t = m.text[lang];
+              return (
+                <li key={m.name} className="more-item">
+                  <div className="more-top">
+                    <b>{m.name}</b>
+                    <span className="label">{t.kind}</span>
+                  </div>
+                  <p>{t.about}</p>
+                  <div className="more-foot">
+                    <ul className="tags">{m.stack.map((s) => <li key={s}>{s}</li>)}</ul>
+                    {m.href && (
+                      <a className="tlink mono" href={m.href} target="_blank" rel="noopener noreferrer">
+                        {d.more.source} <span className="arrow" aria-hidden="true">↗</span>
+                        <span className="sr"> ({d.ui.external})</span>
+                      </a>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   );

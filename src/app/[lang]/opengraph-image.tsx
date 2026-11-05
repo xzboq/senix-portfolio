@@ -38,11 +38,13 @@ export default function OG() {
             utkir
             <div style={{ display: "flex", width: 26, height: 150, marginLeft: 14, marginBottom: 12, background: "#b6f04a", borderRadius: 4 }} />
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", fontSize: 30, gap: 8, color: "#959daa" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", fontSize: 26, gap: 6, color: "#959daa" }}>
             <span>Kiber Yordamchi</span>
             <span>SenixSearch</span>
             <span>WishPool</span>
             <span>Weather</span>
+            <span>Drift Chirchik</span>
+            <span>Fresh Chirchik</span>
           </div>
         </div>
       </div>

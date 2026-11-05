@@ -1,6 +1,6 @@
 import type { L, Locale } from "./i18n";
 
-export type Slug = "kiber-yordamchi" | "senixsearch" | "wishpool" | "weather";
+export type Slug = "kiber-yordamchi" | "senixsearch" | "wishpool" | "weather" | "drift-chirchik" | "fresh-chirchik";
 
 export interface FlowNode {
   t: string;
@@ -10,7 +10,7 @@ export interface Project {
   slug: Slug;
   num: string;
   name: string;
-  statusKey: "kiber" | "search" | "wish" | "weather";
+  statusKey: "kiber" | "search" | "wish" | "weather" | "drift" | "fresh";
   stack: string[];
   github?: string;
   live?: string;
@@ -436,8 +436,280 @@ export const projects: Project[] = [
       },
     },
   },
+  {
+    slug: "drift-chirchik",
+    num: "05",
+    name: "Drift Chirchik",
+    statusKey: "drift",
+    stack: ["three.js", "JavaScript", "WebGL", "Android WebView", "Java", "Blender"],
+    flow: [
+      [{ t: "Blender models" }, { t: "build_cars.py" }, { t: "int16 positions · int8 normals" }],
+      [{ t: "index.html" }, { t: "three.js · GLTFLoader" }, { t: "bloom post-processing" }],
+      [{ t: "Chirchiq map" }, { t: "9 drift zones" }, { t: "traffic · weather" }],
+      [{ t: "MainActivity.java" }, { t: "WebView · fullscreen" }],
+      [{ t: "aapt2 → javac → d8" }, { t: "zipalign → apksigner" }, { t: "DriftChirchik.apk" }],
+    ],
+    text: {
+      en: {
+        kind: "3D game · Android",
+        tagline: "A 3D drift game set in my hometown: real Chirchiq landmarks, Uzbek street cars and a garage — packed into an Android app.",
+        problem:
+          "Drift games are set in Tokyo or Los Angeles, with cars nobody here drives. I wanted to slide a Nexia or a Damas around Navoi Square and the Central Bazaar — streets I actually know.",
+        solution:
+          "Drift Chirchik is a three.js game in a single HTML file, wrapped in a tiny native Android shell. The map is laid out in metres from the Navoi monument, drift zones sit on real places in the city, and 18 cars that drive around Uzbekistan are all rear-wheel drive — so there is something to drift.",
+        flow: ["Models", "Engine", "World", "Android shell", "Build"],
+        flowLead: "Car bodies are exported from Blender and packed into compact typed arrays. The whole game is one page; Java only opens it fullscreen.",
+        features: [
+          "18 cars from Damas to Camaro and an electric BYD Han, each with its own top speed, acceleration, grip and steering, and factory colours.",
+          "9 drift zones on real places: Navoi Square, the Central Bazaar, microdistricts, Dustlik, the Maxam industrial zone, Troitsk. Bronze, silver and gold for points in 60 seconds.",
+          "Garage with upgrades for engine, tyres and steering, paint colours and a “next goal” — the cheapest car you don’t own yet.",
+          "Streets with markings, tiled pavements, lamps, parked cars and benches; traffic, rain and weather.",
+          "Fines and an anti-radar: the city reacts to how you drive.",
+          "Auto-detects a phone or a weak device and starts with light graphics: pixel density, draw distance, fog and shadows are tuned per preset.",
+          "Progress is saved in localStorage; old saves are migrated safely.",
+        ],
+        facts: [
+          { k: "Cars", v: "18 · all RWD" },
+          { k: "Drift zones", v: "9" },
+          { k: "Build", v: "no Android Studio" },
+          { k: "Android", v: "7.0+ · API 24–36" },
+          { k: "Version", v: "1.6" },
+        ],
+        honest: [
+          "The APK isn’t published in Google Play — it is installed directly.",
+          "The garage on this page uses the real numbers from the game’s car table, but it is not the game itself.",
+          "The source code is not on GitHub yet.",
+        ],
+      },
+      ru: {
+        kind: "3D-игра · Android",
+        tagline: "3D-дрифт в моём родном городе: настоящие места Чирчика, машины с узбекских улиц и гараж — всё в Android-приложении.",
+        problem:
+          "Дрифт-игры происходят в Токио или Лос-Анджелесе, на машинах, на которых здесь никто не ездит. Мне хотелось пустить боком Нексию или Дамас вокруг площади Навои и Центрального рынка — по улицам, которые я знаю.",
+        solution:
+          "Дрифт Чирчик — игра на three.js в одном HTML-файле, завёрнутая в маленькую нативную оболочку Android. Карта размечена в метрах от памятника Навои, дрифт-зоны стоят на настоящих местах города, а все 18 машин, которые ездят по Узбекистану, заднеприводные — чтобы было чем дрифтить.",
+        flow: ["Модели", "Движок", "Мир", "Оболочка Android", "Сборка"],
+        flowLead: "Кузова машин экспортируются из Blender и упаковываются в компактные типизированные массивы. Вся игра — одна страница; Java только открывает её на весь экран.",
+        features: [
+          "18 машин от Дамаса до Камаро и электрического BYD Хан: у каждой своя максималка, разгон, сцепление, руль и заводские цвета.",
+          "9 дрифт-зон на настоящих местах: площадь Навои, Центральный рынок, микрорайоны, Дустлик, промзона «Максам», Троицк. Бронза, серебро и золото за очки за 60 секунд.",
+          "Гараж с прокачкой мотора, шин и руля, покраской и «ближайшей целью» — самой дешёвой машиной, которой ещё нет.",
+          "Улицы с разметкой, тротуары из плитки, фонари, машины у обочины и скамейки; поток машин, дождь и погода.",
+          "Штрафы и антирадар: город реагирует на то, как ты ездишь.",
+          "Сам определяет телефон или слабое устройство и включает лёгкую графику: плотность пикселей, дальность прорисовки, туман и тени настроены по пресетам.",
+          "Прогресс хранится в localStorage, старые сохранения аккуратно переносятся.",
+        ],
+        facts: [
+          { k: "Машины", v: "18 · все заднеприводные" },
+          { k: "Дрифт-зоны", v: "9" },
+          { k: "Сборка", v: "без Android Studio" },
+          { k: "Android", v: "7.0+ · API 24–36" },
+          { k: "Версия", v: "1.6" },
+        ],
+        honest: [
+          "APK не опубликован в Google Play — ставится напрямую.",
+          "Гараж на этой странице использует настоящие цифры из таблицы машин игры, но это не сама игра.",
+          "Исходный код пока не выложен на GitHub.",
+        ],
+      },
+      uz: {
+        kind: "3D oʻyin · Android",
+        tagline: "Ona shahrimdagi 3D drift: Chirchiqning haqiqiy joylari, Oʻzbekiston koʻchalaridagi mashinalar va garaj — hammasi Android ilovada.",
+        problem:
+          "Drift oʻyinlari Tokio yoki Los-Anjelesda, bu yerda hech kim haydamaydigan mashinalarda boʻladi. Men Neksiya yoki Damasni Navoiy maydoni va Markaziy bozor atrofida — oʻzim biladigan koʻchalarda yonlatib haydagim keldi.",
+        solution:
+          "Drift Chirchik — bitta HTML fayldagi three.js oʻyini, kichik nativ Android qobigʻiga oʻralgan. Xarita Navoiy haykalidan metrlarda belgilangan, drift zonalari shaharning haqiqiy joylarida, Oʻzbekistonda yuradigan 18 ta mashinaning barchasi orqa yetakchi — drift qilishga imkon bor.",
+        flow: ["Modellar", "Dvigatel", "Dunyo", "Android qobigʻi", "Yigʻish"],
+        flowLead: "Mashina kuzovlari Blenderdan eksport qilinib, ixcham turlangan massivlarga joylanadi. Butun oʻyin — bitta sahifa; Java uni faqat toʻliq ekranda ochadi.",
+        features: [
+          "Damasdan Kamarogacha 18 ta mashina va elektr BYD Han: har birining oʻz tezligi, tezlanishi, ilashishi, rul va zavod ranglari bor.",
+          "Haqiqiy joylarda 9 ta drift zonasi: Navoiy maydoni, Markaziy bozor, mavzelar, Doʻstlik, «Maxam» sanoat zonasi, Troitsk. 60 soniyadagi ochkolar uchun bronza, kumush va oltin.",
+          "Motor, shina va rulni kuchaytirish, boʻyash va «yaqin maqsad» — hali yoʻq eng arzon mashina bilan garaj.",
+          "Chiziqli koʻchalar, plitkali yoʻlaklar, chiroqlar, chetda turgan mashinalar va oʻrindiqlar; transport oqimi, yomgʻir va ob-havo.",
+          "Jarimalar va antiradar: shahar qanday haydashingizga javob beradi.",
+          "Telefon yoki kuchsiz qurilmani oʻzi aniqlab, yengil grafikani yoqadi: piksel zichligi, chizish masofasi, tuman va soyalar presetlar boʻyicha.",
+          "Progress localStorage’da saqlanadi, eski saqlanmalar ehtiyotkorlik bilan koʻchiriladi.",
+        ],
+        facts: [
+          { k: "Mashinalar", v: "18 · hammasi orqa yetakchi" },
+          { k: "Drift zonalari", v: "9" },
+          { k: "Yigʻish", v: "Android Studio’siz" },
+          { k: "Android", v: "7.0+ · API 24–36" },
+          { k: "Versiya", v: "1.6" },
+        ],
+        honest: [
+          "APK Google Play’da nashr etilmagan — toʻgʻridan-toʻgʻri oʻrnatiladi.",
+          "Bu sahifadagi garaj oʻyindagi mashinalar jadvalining haqiqiy raqamlaridan foydalanadi, lekin bu oʻyinning oʻzi emas.",
+          "Manba kodi hali GitHubga joylanmagan.",
+        ],
+      },
+    },
+  },
+  {
+    slug: "fresh-chirchik",
+    num: "06",
+    name: "Fresh Chirchik",
+    statusKey: "fresh",
+    stack: ["HTML", "JavaScript", "Telegram Mini Apps", "Cloudflare Workers", "Bot API"],
+    live: "https://fresh-chirchik.tudookzy.workers.dev",
+    flow: [
+      [{ t: "index.html" }, { t: "Menu · cart · RU/UZ/EN" }],
+      [{ t: "window.Telegram.WebApp?" }, { t: "Mini app · MainButton" }, { t: "Website · copy text", dashed: true }],
+      [{ t: "Cloudflare Worker" }, { t: "initData HMAC check" }, { t: "sum recalculated" }],
+      [{ t: "Bot API sendMessage" }, { t: "Owner’s chat" }],
+    ],
+    text: {
+      en: {
+        kind: "Telegram mini app · website",
+        tagline: "A menu and ordering page for a juice bar in Chirchiq: one HTML file that is a Telegram mini app inside Telegram and a normal website outside it.",
+        problem:
+          "A small juice bar with 405 followers keeps its menu in Instagram posts and takes orders only in direct messages. They work until midnight — exactly when nobody is there to reply.",
+        solution:
+          "One page with the menu, a cart, pickup or delivery and phone validation. Opened in Telegram it becomes a mini app with a native “Send order” button, and the order goes straight to the owner’s chat through a Cloudflare Worker. Opened in a browser, the same order is assembled into text and copied.",
+        flow: ["Page", "Mode", "Worker", "Owner"],
+        flowLead: "The mode is decided by one check — whether window.Telegram.WebApp exists. There are no separate builds.",
+        features: [
+          "Menu by category — fresh juices, detox, smoothies, lemonades — and an order with a running total.",
+          "Sizes are drawn as two glasses of different height, each filled with the colour of its drink: you see the size and scan the list by colour.",
+          "Open / closed badge on Tashkent time; in the last hour it shows the minutes left before closing.",
+          "The exact ready-by minute (“ready by 19:42”). After 23:50 the page honestly says it is too late to press a juice tonight.",
+          "The worker verifies Telegram’s initData signature, rejects stale or forged requests, recalculates the sum on the server and escapes the text.",
+          "The webhook is protected with a secret token derived from the bot token; the token itself lives only in worker secrets.",
+          "Three languages: Russian, Uzbek, English.",
+        ],
+        facts: [
+          { k: "Builds", v: "1 file · 2 modes" },
+          { k: "Backend", v: "Cloudflare Worker" },
+          { k: "Hours", v: "08:00–00:00 · UTC+5" },
+          { k: "Languages", v: "RU · UZ · EN" },
+        ],
+        honest: [
+          "This is a demo mockup made before the bar agreed: prices in the menu are examples, and orders go to my test chat.",
+          "The page is not the venue’s official site and is marked as a demo in its footer.",
+          "There are no photos on purpose — I don’t have theirs, and stock photos would pretend to be their product.",
+        ],
+      },
+      ru: {
+        kind: "Telegram-мини-апп · сайт",
+        tagline: "Меню и заказ для фреш-бара в Чирчике: один HTML-файл, который в Telegram становится мини-аппом, а в браузере — обычным сайтом.",
+        problem:
+          "У маленького фреш-бара 405 подписчиков, меню живёт в постах инстаграма, а заказы — только в личке. Работают до полуночи — как раз тогда, когда отвечать некому.",
+        solution:
+          "Одна страница: меню, корзина, самовывоз или доставка, проверка телефона. Открытая в Telegram, она становится мини-аппом с нативной кнопкой «Отправить заказ», и заказ через Cloudflare Worker улетает владельцу в чат. Открытая в браузере, тот же заказ собирается в текст и копируется.",
+        flow: ["Страница", "Режим", "Воркер", "Владелец"],
+        flowLead: "Режим решает одна проверка — есть ли window.Telegram.WebApp. Отдельных сборок нет.",
+        features: [
+          "Меню по категориям — фреши, детокс, смузи, лимонады — и заказ с итоговой суммой.",
+          "Размеры нарисованы двумя стаканами разной высоты, каждый залит цветом своего напитка: размер видно глазом, а список сканируется по цвету.",
+          "Бейдж «Открыто / Закрыто» по ташкентскому времени; в последний час показывает, сколько минут осталось до закрытия.",
+          "Точная минута готовности («готово к 19:42»). После 23:50 страница честно пишет, что сегодня уже не успеем.",
+          "Воркер проверяет подпись initData от Telegram, отбивает устаревшие и поддельные запросы, пересчитывает сумму на сервере и экранирует текст.",
+          "Вебхук защищён секретом, выведенным из токена бота; сам токен живёт только в секретах воркера.",
+          "Три языка: русский, узбекский, английский.",
+        ],
+        facts: [
+          { k: "Сборки", v: "1 файл · 2 режима" },
+          { k: "Бэкенд", v: "Cloudflare Worker" },
+          { k: "Часы", v: "08:00–00:00 · UTC+5" },
+          { k: "Языки", v: "RU · UZ · EN" },
+        ],
+        honest: [
+          "Это демо-макет, сделанный до согласия бара: цены в меню примерные, а заказы приходят в мой тестовый чат.",
+          "Страница не официальный сайт заведения, и в подвале это помечено.",
+          "Фотографий нет намеренно: их фото у меня нет, а стоковые выдавали бы себя за их продукцию.",
+        ],
+      },
+      uz: {
+        kind: "Telegram mini-ilova · sayt",
+        tagline: "Chirchiqdagi fresh-bar uchun menyu va buyurtma: Telegramda mini-ilova, brauzerda oddiy saytga aylanadigan bitta HTML fayl.",
+        problem:
+          "Kichik fresh-barning 405 obunachisi bor, menyu Instagram postlarida, buyurtmalar esa faqat shaxsiy xabarda. Ular yarim tungacha ishlaydi — aynan javob beradigan odam yoʻq paytda.",
+        solution:
+          "Bitta sahifa: menyu, savat, olib ketish yoki yetkazib berish, telefon tekshiruvi. Telegramda ochilsa, nativ «Buyurtma yuborish» tugmali mini-ilovaga aylanadi va buyurtma Cloudflare Worker orqali egasining chatiga boradi. Brauzerda ochilsa, xuddi shu buyurtma matnga yigʻilib, nusxalanadi.",
+        flow: ["Sahifa", "Rejim", "Worker", "Egasi"],
+        flowLead: "Rejimni bitta tekshiruv hal qiladi — window.Telegram.WebApp bormi. Alohida yigʻmalar yoʻq.",
+        features: [
+          "Toifalar boʻyicha menyu — freshlar, detoks, smuzi, limonadlar — va umumiy summali buyurtma.",
+          "Hajmlar har xil balandlikdagi ikki stakan bilan chizilgan, har biri oʻz ichimligi rangida: hajm koʻzga koʻrinadi, roʻyxat rang boʻyicha koʻriladi.",
+          "Toshkent vaqti boʻyicha «Ochiq / Yopiq» belgisi; oxirgi soatda yopilishgacha qolgan daqiqalarni koʻrsatadi.",
+          "Aniq tayyor boʻlish daqiqasi («19:42 da tayyor»). 23:50 dan keyin sahifa bugun ulgurmasligini halol yozadi.",
+          "Worker Telegram initData imzosini tekshiradi, eskirgan va soxta soʻrovlarni rad etadi, summani serverda qayta hisoblaydi va matnni ekranlaydi.",
+          "Vebhuk bot tokenidan olingan maxfiy kalit bilan himoyalangan; tokenning oʻzi faqat worker sirlarida.",
+          "Uch til: rus, oʻzbek, ingliz.",
+        ],
+        facts: [
+          { k: "Yigʻmalar", v: "1 fayl · 2 rejim" },
+          { k: "Backend", v: "Cloudflare Worker" },
+          { k: "Ish vaqti", v: "08:00–00:00 · UTC+5" },
+          { k: "Tillar", v: "RU · UZ · EN" },
+        ],
+        honest: [
+          "Bu bar rozilik bermasdan oldin qilingan demo-maket: menyudagi narxlar taxminiy, buyurtmalar esa mening test chatimga keladi.",
+          "Sahifa muassasaning rasmiy sayti emas va bu pastki qismda belgilangan.",
+          "Rasmlar ataylab yoʻq: ularning rasmlari menda yoʻq, stok rasmlar esa ularning mahsuloti sifatida koʻrinardi.",
+        ],
+      },
+    },
+  },
 ];
 
 export const bySlug = (s: string) => projects.find((p) => p.slug === s);
 export const nextOf = (s: Slug) => projects[(projects.findIndex((p) => p.slug === s) + 1) % projects.length];
 export const txt = (p: Project, l: Locale) => p.text[l];
+
+/** Небольшие проекты и эксперименты: без отдельной страницы. */
+export interface MoreProject {
+  name: string;
+  stack: string[];
+  href?: string;
+  text: L<{ kind: string; about: string }>;
+}
+
+export const more: MoreProject[] = [
+  {
+    name: "LIFE//HUB",
+    stack: ["Node.js", "Express 5", "JavaScript"],
+    text: {
+      en: { kind: "Web · AI", about: "One chat for ChatGPT, Claude, DeepSeek, Grok and Gemini. A small Node server calls the chosen provider, so API keys never reach the browser." },
+      ru: { kind: "Веб · ИИ", about: "Один чат для ChatGPT, Claude, DeepSeek, Grok и Gemini. Небольшой Node-сервер сам обращается к выбранному провайдеру, поэтому ключи API никогда не попадают в браузер." },
+      uz: { kind: "Veb · AI", about: "ChatGPT, Claude, DeepSeek, Grok va Gemini uchun bitta chat. Kichik Node-server tanlangan provayderga oʻzi murojaat qiladi, shuning uchun API kalitlari brauzerga tushmaydi." },
+    },
+  },
+  {
+    name: "NEXUS PRO",
+    stack: ["Python", "HTML", "JavaScript"],
+    text: {
+      en: { kind: "Developer tool", about: "A local command center for developers: a web dashboard served by a small Python server and started with one script." },
+      ru: { kind: "Инструмент разработчика", about: "Локальный командный центр разработчика: веб-панель, которую отдаёт небольшой Python-сервер, запускается одним скриптом." },
+      uz: { kind: "Dasturchi vositasi", about: "Dasturchi uchun lokal boshqaruv markazi: kichik Python-server beradigan veb-panel, bitta skript bilan ishga tushadi." },
+    },
+  },
+  {
+    name: "Vanta Visuals",
+    stack: ["Java 21", "Fabric", "Minecraft 1.21"],
+    text: {
+      en: { kind: "Minecraft mod", about: "A client-side visuals mod for Minecraft on Fabric, built around a scalable module system." },
+      ru: { kind: "Мод для Minecraft", about: "Клиентский мод визуальных эффектов для Minecraft на Fabric, построенный на расширяемой системе модулей." },
+      uz: { kind: "Minecraft modi", about: "Fabric’dagi Minecraft uchun mijoz tomonidagi vizual effektlar modi, kengaytiriladigan modullar tizimiga qurilgan." },
+    },
+  },
+  {
+    name: "Horoscope bot",
+    stack: ["Python", "aiogram 3", "SQLite"],
+    text: {
+      en: { kind: "Telegram bot", about: "Zodiac sign, daily horoscope, predictions and advice. aiogram 3 routers, FSM states and an SQLite database." },
+      ru: { kind: "Telegram-бот", about: "Знак зодиака, гороскоп на день, предсказания и советы. Роутеры aiogram 3, состояния FSM и база SQLite." },
+      uz: { kind: "Telegram bot", about: "Burj belgisi, kunlik munajjimlar bashorati, bashoratlar va maslahatlar. aiogram 3 routerlari, FSM holatlari va SQLite bazasi." },
+    },
+  },
+  {
+    name: "OSINT Mini App",
+    stack: ["HTML", "Telegram Mini Apps"],
+    href: "https://github.com/xzboq/OSINT-Mini-App",
+    text: {
+      en: { kind: "Telegram mini app", about: "A Telegram mini app for open-source intelligence lookups. The source is public on GitHub." },
+      ru: { kind: "Telegram-мини-апп", about: "Мини-апп в Telegram для поиска по открытым источникам (OSINT). Исходный код открыт на GitHub." },
+      uz: { kind: "Telegram mini-ilova", about: "Ochiq manbalardan qidirish (OSINT) uchun Telegram mini-ilovasi. Manba kodi GitHubda ochiq." },
+    },
+  },
+];
