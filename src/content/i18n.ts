@@ -20,11 +20,11 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 
 export const links = {
-  github: "https://github.com/SenixDev14yo",
+  github: "https://github.com/xzboq",
   telegram: "https://t.me/princess_scammer",
-  instagram: "https://instagram.com/senixed",
-  email: "senixsteaam@gmail.com",
-  // FormSubmit: без БД и собственного бэкенда; первое письмо просит подтвердить адрес.
+  instagram: "https://instagram.com/princess_scamer",
+  // FormSubmit: без БД и собственного бэкенда. Адрес можно заменить на алиас из письма FormSubmit,
+  // тогда почта не попадёт даже в JS-бандл.
   form:
     process.env.NEXT_PUBLIC_FORM_ENDPOINT ??
     "https://formsubmit.co/ajax/senixsteaam@gmail.com",

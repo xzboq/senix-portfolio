@@ -16,7 +16,7 @@ interface Props {
   labHref: string;
 }
 
-const TONE_VAR = { ok: "--ok", warn: "--warn", bad: "--accent", none: "--mute" } as const;
+const TONE_VAR = { ok: "--ok", warn: "--warn", bad: "--bad", none: "--mute" } as const;
 
 export function Scanner({ lang, t, verdicts, categories, samples, severity, labHref }: Props) {
   const [text, setText] = useState(samples[0]);

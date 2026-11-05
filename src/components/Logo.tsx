@@ -1,9 +1,17 @@
-/** Монограмма: «u», у которой правая стойка длиннее левой — как галочка проверки. */
-export function Logo() {
+/** Монограмма: «u», правая стойка которой уходит вверх как галочка, и мигающий курсор терминала. */
+export function Logo({ withText = true }: { withText?: boolean }) {
   return (
-    <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <rect x="1" y="1" width="26" height="26" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 9.5V16a6 6 0 0 0 12 0V6" stroke="currentColor" strokeWidth="2.6" strokeLinecap="square" />
-    </svg>
+    <span className="logo-in">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="30" height="30" rx="8" className="logo-box" />
+        <path d="M9 10v6.5a5.5 5.5 0 0 0 11 0V7" className="logo-u" />
+        <rect x="22.5" y="21" width="5" height="2.6" rx="1" className="logo-cursor" />
+      </svg>
+      {withText && (
+        <span className="logo-text" aria-hidden="true">
+          utkir<span className="logo-dot">.dev</span>
+        </span>
+      )}
+    </span>
   );
 }

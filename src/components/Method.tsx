@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Locale } from "@/content/i18n";
 import type { Dict } from "@/content/dict";
 import { bySlug } from "@/content/projects";
+import { SecHead } from "./SecHead";
 
 interface Row {
   name: string;
@@ -16,15 +17,13 @@ export function Method({ lang, d }: { lang: Locale; d: Dict }) {
   return (
     <section id="method" className="sec" aria-labelledby="method-h">
       <div className="wrap">
-        <div className="sec-head">
-          <span className="n">02</span>
-          <h2 id="method-h">{d.method.title}</h2>
-          <p>{d.method.lead}</p>
-        </div>
+        <SecHead id="method-h" n="02" path="method" title={d.method.title} lead={d.method.lead} />
         <ol className="method-grid">
           {d.method.items.map((it, i) => (
-            <li key={it.h} className="m-item rv">
-              <span className="k">M{i + 1}</span>
+            <li key={it.h} className="m-item rv" data-glow>
+              <span className="k" aria-hidden="true">
+                <span className="k-kw">rule</span>[{i}]
+              </span>
               <h3>{it.h}</h3>
               <p>{it.p}</p>
               <Link href={`/${lang}/projects/${it.slug}`} className="tlink mono" style={{ fontSize: "0.8125rem" }}>
@@ -35,8 +34,11 @@ export function Method({ lang, d }: { lang: Locale; d: Dict }) {
         </ol>
 
         <div className="matrix-wrap rv">
-          <h3>{d.toolbox.title}</h3>
-          <p>{d.toolbox.lead}</p>
+          <div className="matrix-head">
+            <h3>{d.toolbox.title}</h3>
+            <p>{d.toolbox.lead}</p>
+          </div>
+          <div className="matrix-scroll">
           <table className="matrix">
             <thead>
               <tr>
@@ -68,6 +70,7 @@ export function Method({ lang, d }: { lang: Locale; d: Dict }) {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </section>

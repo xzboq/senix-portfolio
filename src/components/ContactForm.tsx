@@ -9,7 +9,6 @@ type Status = "idle" | "sending" | "sent" | "error";
 export function ContactForm({ t }: { t: Dict["contact"] }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-  const [body, setBody] = useState("");
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,7 +22,6 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
     setErrors(errs);
     if (errs.name || errs.reach || errs.message) return;
 
-    setBody(`${message}\n\n— ${name}, ${reach}`);
     setStatus("sending");
     try {
       const res = await fetch(links.form, {
@@ -49,8 +47,9 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
   const field = (id: "name" | "reach" | "message", label: string, hint?: string) => (
     <div className="field">
       <label htmlFor={`f-${id}`} className="label">
+        <span className="flag" aria-hidden="true">--{id}</span>
         {label}
-        {hint ? ` — ${hint}` : ""}
+        {hint ? <span className="hint"> · {hint}</span> : null}
       </label>
       {id === "message" ? (
         <textarea id={`f-${id}`} name={id} maxLength={3000} aria-invalid={errors[id] || undefined} aria-describedby={errors[id] ? `e-${id}` : undefined} />
@@ -62,12 +61,17 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
   );
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate>
+    <form className="form panel" onSubmit={onSubmit} noValidate>
+      <div className="panel-bar">
+        <span>contact.sh</span>
+        <span className="live">FormSubmit · SSL</span>
+      </div>
+      <div className="form-body">
       {field("name", t.name)}
       {field("reach", t.reach, t.reachHint)}
       {field("message", t.message)}
       <input className="hp" type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
+      <div className="form-actions">
         <button type="submit" className="btn btn--solid" disabled={status === "sending"}>
           {status === "sending" ? t.sending : t.send} <span className="arrow">→</span>
         </button>
@@ -76,12 +80,13 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
           {status === "error" && (
             <>
               {t.fail}{" "}
-              <a className="tlink" href={`mailto:${links.email}?subject=${encodeURIComponent("Portfolio")}&body=${encodeURIComponent(body)}`}>
-                {links.email}
+              <a className="tlink" href={links.telegram} target="_blank" rel="noopener noreferrer">
+                @princess_scammer
               </a>
             </>
           )}
         </p>
+      </div>
       </div>
     </form>
   );

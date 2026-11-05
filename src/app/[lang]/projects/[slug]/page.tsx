@@ -46,14 +46,16 @@ export default async function ProjectPage({ params }: { params: Params }) {
       <div className="wrap">
         <header className="pp-head hero-in">
           <Link href={`/${lang}#works`} className="crumb">← {d.ui.back}</Link>
+          <p className="pp-path" aria-hidden="true">~/projects/<b>{p.slug}</b><span className="caret" /></p>
           <p className="label" style={{ marginTop: 14 }}>{p.num} · {t.kind}</p>
           <h1 className="pp-title">{p.name}</h1>
           <p className="pp-tag">{t.tagline}</p>
         </header>
 
         <div className="pp-grid">
-          <aside className="spec" aria-label={d.project.spec}>
-            <p className="label" style={{ marginBottom: 10 }}>{d.project.spec}</p>
+          <aside className="spec panel" aria-label={d.project.spec}>
+            <div className="panel-bar"><span>{d.project.spec}</span><span>spec.json</span></div>
+            <div className="spec-body">
             <dl>
               <div>
                 <dt className="label">{d.project.status}</dt>
@@ -63,7 +65,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
               <div><dt className="label">{d.project.stack}</dt><dd className="mono" style={{ fontSize: "0.875rem", fontWeight: 400 }}>{p.stack.join(" · ")}</dd></div>
               <div>
                 <dt className="label">{d.project.source}</dt>
-                <dd className={p.github ? undefined : "none"}>{p.github ? "github.com/SenixDev14yo/SenixSearch" : d.project.notPublished}</dd>
+                <dd className={p.github ? undefined : "none"}>{p.github ? p.github.replace("https://", "") : d.project.notPublished}</dd>
               </div>
               <div>
                 <dt className="label">{d.project.live}</dt>
@@ -84,20 +86,21 @@ export default async function ProjectPage({ params }: { params: Params }) {
                 )}
               </div>
             )}
+            </div>
           </aside>
 
           <div>
             <section className="blk">
-              <h2>{d.project.problem}</h2>
+              <h2><span aria-hidden="true">## </span>{d.project.problem}</h2>
               <p className="body">{t.problem}</p>
             </section>
             <section className="blk">
-              <h2>{d.project.solution}</h2>
+              <h2><span aria-hidden="true">## </span>{d.project.solution}</h2>
               <p className="body">{t.solution}</p>
             </section>
 
             <section className="blk" id="lab">
-              <h2>{d.project.lab}</h2>
+              <h2><span aria-hidden="true">## </span>{d.project.lab}</h2>
               <Lab
                 slug={p.slug}
                 lang={lang}
@@ -107,18 +110,18 @@ export default async function ProjectPage({ params }: { params: Params }) {
             </section>
 
             <section className="blk">
-              <h2>{d.project.how}</h2>
+              <h2><span aria-hidden="true">## </span>{d.project.how}</h2>
               <p className="body">{t.flowLead}</p>
               <Flow cols={p.flow} labels={t.flow} />
             </section>
 
             <section className="blk">
-              <h2>{d.project.features}</h2>
+              <h2><span aria-hidden="true">## </span>{d.project.features}</h2>
               <ul className="list">{t.features.map((f) => <li key={f}>{f}</li>)}</ul>
             </section>
 
             <section className="blk">
-              <h2>{d.project.facts}</h2>
+              <h2><span aria-hidden="true">## </span>{d.project.facts}</h2>
               <div className="facts">
                 {t.facts.map((f) => (
                   <div key={f.k}><span className="label">{f.k}</span><b>{f.v}</b></div>
@@ -127,7 +130,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
             </section>
 
             <section className="blk">
-              <h2>{d.project.honest}</h2>
+              <h2><span aria-hidden="true">## </span>{d.project.honest}</h2>
               <ul className="list honest">{t.honest.map((f) => <li key={f}>{f}</li>)}</ul>
             </section>
           </div>
@@ -141,7 +144,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
           </Link>
         </nav>
       </div>
-      <Footer d={d} />
+      <Footer d={d} lang={lang} />
     </>
   );
 }

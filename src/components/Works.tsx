@@ -5,6 +5,7 @@ import { fmt, type Dict } from "@/content/dict";
 import { projects, type Project } from "@/content/projects";
 import { analyzeText, assess, signalText } from "@/lib/engine";
 import shot from "@/assets/wishpool.jpg";
+import { SecHead } from "./SecHead";
 
 function Visual({ p, lang, d }: { p: Project; lang: Locale; d: Dict }) {
   if (p.slug === "kiber-yordamchi") {
@@ -67,31 +68,33 @@ export function Works({ lang, d }: { lang: Locale; d: Dict }) {
   return (
     <section id="works" className="sec" aria-labelledby="works-h">
       <div className="wrap">
-        <div className="sec-head">
-          <span className="n">01</span>
-          <h2 id="works-h">{d.works.title}</h2>
-          <p>{d.works.lead}</p>
-        </div>
-        <ul className="works">
+        <SecHead id="works-h" n="01" path="works" title={d.works.title} lead={d.works.lead} />
+        <ul className="bento">
           {projects.map((p) => {
             const t = p.text[lang];
             return (
               <li key={p.slug} className="rv">
-                <Link href={`/${lang}/projects/${p.slug}`} className="work">
-                  <span className="work-num">{p.num}</span>
-                  <div className="work-main">
-                    <h3 className="work-name">
-                      <span>{p.name}</span>
-                      <span className="arrow" aria-hidden="true">↗</span>
-                    </h3>
-                    <p className="work-tag">{t.tagline}</p>
-                    <div className="work-meta">
+                <Link href={`/${lang}/projects/${p.slug}`} className="card" data-glow>
+                  <div className="card-bar">
+                    <span className="dots" aria-hidden="true"><i /><i /><i /></span>
+                    <span className="card-path">~/projects/<b>{p.slug}</b></span>
+                    <span className="card-num">{p.num}</span>
+                  </div>
+                  <Visual p={p} lang={lang} d={d} />
+                  <div className="card-body">
+                    <div className="card-meta">
                       <span className="stamp" data-k={p.statusKey}>{d.works.status[p.statusKey]}</span>
                       <span className="label">{t.kind}</span>
                     </div>
-                    <p className="stack">{p.stack.map((s) => <span key={s}>{s}</span>)}</p>
+                    <h3 className="card-name">
+                      {p.name}
+                      <span className="arrow" aria-hidden="true">↗</span>
+                    </h3>
+                    <p className="card-tag">{t.tagline}</p>
+                    <ul className="tags" aria-label={d.project.stack}>
+                      {p.stack.map((s) => <li key={s}>{s}</li>)}
+                    </ul>
                   </div>
-                  <Visual p={p} lang={lang} d={d} />
                 </Link>
               </li>
             );

@@ -13,7 +13,7 @@ const SCALE: { v: Verdict; from: number }[] = [
   { v: "HIGH_RISK", from: 60 },
   { v: "DANGEROUS", from: 80 },
 ];
-const TONE_VAR = { ok: "--ok", warn: "--warn", bad: "--accent", none: "--mute" } as const;
+const TONE_VAR = { ok: "--ok", warn: "--warn", bad: "--bad", none: "--mute" } as const;
 
 export default function KiberLab({ lang, t, shared }: LabProps<Dict["lab"]["kiber"]> & { lang: Locale }) {
   const [text, setText] = useState(shared.sample[0]);
