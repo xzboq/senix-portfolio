@@ -8,6 +8,11 @@ import { projects } from "@/content/projects";
 import { bootScript, themeScript } from "@/lib/theme";
 import { Boot } from "@/components/Boot";
 import { Cursor } from "@/components/Cursor";
+import { Extras } from "@/components/Extras";
+import { Nebula } from "@/components/Nebula";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import { Stardust } from "@/components/Stardust";
+import { Warp } from "@/components/Warp";
 import "../globals.css";
 
 const onest = Onest({ subsets: ["latin", "cyrillic"], variable: "--font-onest", display: "swap" });
@@ -20,6 +25,16 @@ const mono = JetBrains_Mono({
   display: "swap",
   preload: false,
 });
+
+/** Яркие звёзды фона: левый край, правый край, низ — подальше от колонки текста. [x, y, размер] */
+const FLARES: [string, string, number][] = [
+  ["4.5%", "22%", 1],
+  ["95.5%", "33%", 0.8],
+  ["7.5%", "72%", 0.7],
+  ["92%", "61%", 1.05],
+  ["38%", "94%", 0.5],
+  ["97.5%", "50%", 0.55],
+];
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -80,6 +95,15 @@ export default async function RootLayout({
         <Boot />
         <div className="bg" aria-hidden="true">
           <div className="bg-stars" />
+          {/* ПК: несколько ярких далёких звёзд с лучами-«крестами» по краям экрана, мерцают.
+              Лежат под туманностью: как и мелкие звёзды, они дальше её — пыль их приглушает */}
+          <div className="bg-flares">
+            {FLARES.map((f, i) => (
+              <i key={i} style={{ "--x": f[0], "--y": f[1], "--s": f[2], "--d": `${-i * 1.7}s` } as React.CSSProperties} />
+            ))}
+          </div>
+          <Nebula />
+          <Warp />
           <div className="bg-glow" />
           <div className="bg-noise" />
         </div>
@@ -94,6 +118,9 @@ export default async function RootLayout({
           projects={projects.map((p) => ({ slug: p.slug, num: p.num, name: p.name, kind: p.text[lang].kind }))}
         />
         <Cursor />
+        <Stardust />
+        <SmoothScroll />
+        <Extras t={d.fun} />
         <div className="page">
           <main id="main">{children}</main>
         </div>

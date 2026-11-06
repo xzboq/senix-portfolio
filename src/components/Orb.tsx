@@ -6,7 +6,8 @@ import { useEffect, useRef } from "react";
  *  Базовая версия — чистый CSS/SVG: задняя половина орбиты лежит за шаром, передняя — перед ним.
  *  На ПК (от 1024px), если есть WebGL и не просили «уменьшить движение», поверх включается
  *  WebGL-версия из orb-gl.ts: стекло с туманностью, блик за курсором, орбита из частиц.
- *  Её код грузится динамически — телефоны его не скачивают. */
+ *  Её код грузится динамически — телефоны его не скачивают. На ПК CSS-шар обёрнут в .orb-css
+ *  и проявляется с задержкой — только если WebGL так и не завёлся. */
 export function Orb() {
   const ref = useRef<HTMLDivElement>(null);
   const glRef = useRef<HTMLCanvasElement>(null);
@@ -94,34 +95,36 @@ export function Orb() {
   return (
     <div ref={ref} className="orb-wrap" aria-hidden="true">
       <canvas ref={glRef} className="orb-gl" />
-      <i className="orb-rays" />
-      <svg className="orb-ring orb-ring--alt" viewBox="0 0 600 600">
-        <ellipse cx="300" cy="300" rx="292" ry="66" />
-      </svg>
-      <svg className="orb-ring" viewBox="0 0 600 600">
-        <ellipse cx="300" cy="300" rx="292" ry="66" className="ring-glow" />
-        <ellipse cx="300" cy="300" rx="292" ry="66" />
-      </svg>
-      <div className="orb">
-        <i className="orb-glow" />
-        <i className="orb-glow orb-glow--2" />
-        <i className="orb-shine" />
-        <i className="orb-rim" />
-      </div>
-      <svg className="orb-ring orb-ring--front" viewBox="0 0 600 600">
-        <defs>
-          <clipPath id="orb-front">
-            <rect x="0" y="300" width="600" height="300" />
-          </clipPath>
-        </defs>
-        <g clipPath="url(#orb-front)">
+      <div className="orb-css">
+        <i className="orb-rays" />
+        <svg className="orb-ring orb-ring--alt" viewBox="0 0 600 600">
+          <ellipse cx="300" cy="300" rx="292" ry="66" />
+        </svg>
+        <svg className="orb-ring" viewBox="0 0 600 600">
           <ellipse cx="300" cy="300" rx="292" ry="66" className="ring-glow" />
           <ellipse cx="300" cy="300" rx="292" ry="66" />
-          <circle r="5" className="orb-moon">
-            <animateMotion dur="11s" repeatCount="indefinite" path="M 8 300 A 292 66 0 1 0 592 300 A 292 66 0 1 0 8 300" />
-          </circle>
-        </g>
-      </svg>
+        </svg>
+        <div className="orb">
+          <i className="orb-glow" />
+          <i className="orb-glow orb-glow--2" />
+          <i className="orb-shine" />
+          <i className="orb-rim" />
+        </div>
+        <svg className="orb-ring orb-ring--front" viewBox="0 0 600 600">
+          <defs>
+            <clipPath id="orb-front">
+              <rect x="0" y="300" width="600" height="300" />
+            </clipPath>
+          </defs>
+          <g clipPath="url(#orb-front)">
+            <ellipse cx="300" cy="300" rx="292" ry="66" className="ring-glow" />
+            <ellipse cx="300" cy="300" rx="292" ry="66" />
+            <circle r="5" className="orb-moon">
+              <animateMotion dur="11s" repeatCount="indefinite" path="M 8 300 A 292 66 0 1 0 592 300 A 292 66 0 1 0 8 300" />
+            </circle>
+          </g>
+        </svg>
+      </div>
     </div>
   );
 }

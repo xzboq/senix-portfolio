@@ -1377,3 +1377,385 @@ a.ch:hover .arrow { transform: translate(3px, -3px); color: var(--accent-ink); }
   }
 }
 @keyframes ch-in { from { opacity: 0; transform: translateY(0.5em) rotate(7deg) scale(0.86); } to { opacity: 1; transform: none; } }
+
+/* ───────── ближние звёзды (ПК): тянутся в лучи на скорости прокрутки ───────── */
+.warp { display: none; }
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .warp { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+  :root[data-theme="light"] .warp { display: none; }
+}
+
+/* ───────── CSS-шар — запасной: на ПК ждёт WebGL-шар и проявляется, только если тот не завёлся ───────── */
+.orb-css { position: absolute; inset: 0; }
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .orb-wrap:not([data-gl]) > .orb-css { animation: fade 0.6s ease-out 1.8s both; }
+  .orb-wrap[data-gl] > .orb-gl { animation: fade 0.5s ease-out both; }
+}
+
+/* ───────── подвал (ПК): огромное «utkir» поднимается из-за края к концу страницы ───────── */
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* .foot с overflow: hidden — сам себе прокрутчик для view() потомков, поэтому шкала — от подвала */
+    .foot { view-timeline: --foot block; }
+    .wordmark { animation: wm-rise linear both; animation-timeline: --foot; animation-range: entry 45% entry 100%; }
+  }
+}
+@keyframes wm-rise { from { opacity: 0; transform: translateY(42%) scale(0.9); letter-spacing: 0.06em; } }
+
+/* ───────── больше движения (только ПК) ─────────
+   Сдвиги — через отдельные свойства translate / scale: transform у карточек и кнопок занят наклоном и «магнитом». */
+.dust { display: none; }
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  /* звёздная пыль за курсором */
+  @media (hover: hover) and (pointer: fine) {
+    .dust { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 399; pointer-events: none; }
+  }
+
+  /* шапка въезжает сверху при загрузке */
+  .top-in { animation: top-drop 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--boot, 0s) + 0.1s); }
+
+  /* огромная бегущая строка кренится на скорости прокрутки, звёздочки в ней вращаются */
+  .mq-line--big { transform: skewX(calc(var(--sv, 0) * -0.22deg)); }
+  .mq-line--big .mq-dot { animation: spin 8s linear infinite; }
+
+  /* по главным кнопкам время от времени пробегает блик */
+  .btn--solid, .nav-cta { position: relative; overflow: hidden; }
+  .btn--solid::after, .nav-cta::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.38) 47%, rgba(255, 255, 255, 0.1) 55%, transparent 68%);
+    translate: -130% 0;
+    animation: btn-shine 5.6s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+    animation-delay: calc(var(--boot, 0s) + 2.2s);
+  }
+  .nav-cta::after { animation-delay: calc(var(--boot, 0s) + 3.4s); }
+  .btn--solid:disabled::after { display: none; }
+
+  @supports (animation-timeline: view()) {
+    /* шапки разделов: номер, «/» и путь выезжают по очереди, линия прочерчивается, подводка всплывает */
+    .sec-head { position: relative; view-timeline: --sh block; }
+    .sec-meta > .sec-n, .sec-meta > .sec-sep, .sec-meta > .sec-path { animation: meta-in linear both; animation-timeline: --sh; animation-range: entry 0% entry 60%; }
+    .sec-meta > .sec-sep { animation-range: entry 8% entry 68%; }
+    .sec-meta > .sec-path { animation-range: entry 16% entry 76%; }
+    .sec-rule { transform-origin: 0 50%; animation: rule-draw linear both; animation-timeline: --sh; animation-range: entry 10% cover 40%; }
+    .sec-lead { animation: lead-in linear both; animation-timeline: --sh; animation-range: entry 35% cover 42%; }
+    /* огромная контурная цифра раздела плывёт за шапкой медленнее страницы */
+    .sec-head[data-n]::before {
+      content: attr(data-n); position: absolute; z-index: -1; right: -0.02em; top: -0.5em; pointer-events: none;
+      font: 800 clamp(9rem, 16vw, 15rem)/1 var(--font-display); letter-spacing: -0.04em;
+      color: transparent; -webkit-text-stroke: 1.5px color-mix(in srgb, var(--fg) 10%, transparent);
+      animation: num-drift linear both; animation-timeline: --sh; animation-range: cover 0% cover 100%;
+    }
+
+    /* зарево над разделом разгорается на входе */
+    .sec { view-timeline: --sec block; }
+    .sec::before { animation: glow-in linear both; animation-timeline: --sec; animation-range: entry 0% cover 30%; }
+
+    /* цифры: линия сверху прочерчивается, блоки поднимаются по очереди */
+    .stats { position: relative; border-top-color: transparent; view-timeline: --st block; }
+    .stats::before {
+      content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 1px; pointer-events: none;
+      background: linear-gradient(90deg, var(--accent), var(--line2) 45%, transparent);
+      transform-origin: 0 50%; animation: rule-draw linear both; animation-timeline: --st; animation-range: entry 0% cover 40%;
+    }
+    .stats > div { animation: lead-in linear both; animation-timeline: --st; animation-range: entry 10% cover 30%; }
+    .stats > div:nth-child(2) { animation-range: entry 18% cover 34%; }
+    .stats > div:nth-child(3) { animation-range: entry 26% cover 38%; }
+    .stats > div:nth-child(4) { animation-range: entry 34% cover 42%; }
+
+    /* работы: превью открывается шторкой сверху вниз, теги выскакивают по одному.
+       У .card overflow: hidden — для view() потомков он сам прокрутчик, поэтому шкала — от карточки (li) */
+    .bento > li { view-timeline: --card block; }
+    .bento .viz { animation: viz-wipe linear both; animation-timeline: --card; animation-range: cover 3% cover 25%; }
+    .bento .tags li { animation: tag-pop linear both; animation-timeline: --card; animation-range: cover 29% cover 36%; }
+    .bento .tags li:nth-child(2) { animation-range: cover 30.5% cover 37.5%; }
+    .bento .tags li:nth-child(3) { animation-range: cover 32% cover 39%; }
+    .bento .tags li:nth-child(4) { animation-range: cover 33.5% cover 40.5%; }
+    .bento .tags li:nth-child(5) { animation-range: cover 35% cover 42%; }
+    .bento .tags li:nth-child(n + 6) { animation-range: cover 36.5% cover 43.5%; }
+
+    /* подход: номер шага выезжает слева */
+    .m-item { view-timeline: --mi block; }
+    .m-item .k { animation: meta-in linear both; animation-timeline: --mi; animation-range: entry 20% entry 80%; }
+
+    /* связь: каналы выезжают справа по очереди, поля формы всплывают */
+    .channels { view-timeline: --chs block; }
+    .channels li { animation: slide-r linear both; animation-timeline: --chs; animation-range: cover 2% cover 20%; }
+    .channels li:nth-child(2) { animation-range: cover 6% cover 24%; }
+    .channels li:nth-child(3) { animation-range: cover 10% cover 28%; }
+    .form { view-timeline: --form block; }
+    .form-body > * { animation: lead-in linear both; animation-timeline: --form; animation-range: cover 2% cover 16%; }
+    .form-body > :nth-child(2) { animation-range: cover 5% cover 19%; }
+    .form-body > :nth-child(3) { animation-range: cover 8% cover 22%; }
+    .form-body > :nth-child(n + 4) { animation-range: cover 11% cover 25%; }
+
+    /* подвал: ссылки выезжают справа, призыв всплывает */
+    .foot-links li { animation: slide-r linear both; animation-timeline: --foot; animation-range: entry 25% entry 65%; }
+    .foot-links li:nth-child(2) { animation-range: entry 30% entry 70%; }
+    .foot-links li:nth-child(3) { animation-range: entry 35% entry 75%; }
+    .foot-links li:nth-child(n + 4) { animation-range: entry 40% entry 80%; }
+    .foot-cta > * { animation: lead-in linear both; animation-timeline: --foot; animation-range: entry 20% entry 70%; }
+
+    /* страница проекта: соседние работы выезжают с боков */
+    .pager-link { animation: slide-l linear both; animation-timeline: view(); animation-range: entry 0% cover 25%; }
+    .pager-next { animation-name: slide-r; }
+  }
+}
+@keyframes top-drop { from { opacity: 0; translate: 0 -28px; } }
+@keyframes btn-shine { 0%, 70% { translate: -130% 0; } 100% { translate: 130% 0; } }
+@keyframes meta-in { from { opacity: 0; translate: -18px 0; } }
+@keyframes rule-draw { from { scale: 0 1; } }
+@keyframes lead-in { from { opacity: 0; translate: 0 26px; } }
+@keyframes num-drift { from { translate: 0 32%; } to { translate: 0 -32%; } }
+@keyframes glow-in { from { opacity: 0; scale: 0.55; } }
+@keyframes viz-wipe { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
+@keyframes tag-pop { from { opacity: 0; translate: 0 10px; scale: 0.8; } }
+@keyframes slide-r { from { opacity: 0; translate: 48px 0; } }
+@keyframes slide-l { from { opacity: 0; translate: -48px 0; } }
+
+/* ───────── функции ПК: кнопки в углу, уведомление о комете, местное время, гиперпрыжок ───────── */
+.clock-pill { display: none; }
+@media (min-width: 1024px) {
+  .fab { position: fixed; right: 20px; bottom: 20px; z-index: 70; display: grid; gap: 10px; justify-items: center; }
+  .fab-btn {
+    position: relative; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid var(--line2); color: var(--fg); font-size: 1.05rem; line-height: 1;
+    background: color-mix(in srgb, var(--panel) 72%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(150%); backdrop-filter: blur(12px) saturate(150%);
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: translate 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.2s, opacity 0.3s, visibility 0.3s, scale 0.3s;
+  }
+  .fab-btn:hover { translate: 0 -2px; border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .fab-top { opacity: 0; visibility: hidden; scale: 0.8; }
+  .fab-top[data-show] { opacity: 1; visibility: visible; scale: 1; }
+  .fab-top svg { position: absolute; inset: -1px; width: calc(100% + 2px); height: calc(100% + 2px); rotate: -90deg; pointer-events: none; }
+  .fab-track, .fab-prog { fill: none; stroke-width: 2; }
+  .fab-track { stroke: transparent; }
+  .fab-prog { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; }
+  @supports (animation-timeline: scroll()) {
+    .fab-prog { animation: fab-prog linear both; animation-timeline: scroll(root block); }
+  }
+  /* эквалайзер на кнопке звука: стоит, пока звук выключен */
+  .eq { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+  .eq i { width: 3px; height: 4px; border-radius: 2px; background: var(--mute); }
+  .eq i:nth-child(2) { height: 8px; }
+  .eq i:nth-child(3) { height: 6px; }
+  .fab-sound[data-on] { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .fab-sound[data-on] .eq i { background: var(--accent-ink); animation: eq 0.8s ease-in-out infinite alternate; }
+  .fab-sound[data-on] .eq i:nth-child(2) { animation-delay: -0.3s; }
+  .fab-sound[data-on] .eq i:nth-child(3) { animation-delay: -0.55s; }
+  .fab-sound[data-on] .eq i:nth-child(4) { animation-delay: -0.15s; }
+
+  /* уведомление о пойманной комете — справа под шапкой, поверх планеты, чтобы не закрывать кнопки первого экрана */
+  .toasts { position: fixed; top: 88px; right: 20px; z-index: 70; display: grid; gap: 10px; width: min(360px, calc(100vw - 40px)); }
+  .toast {
+    display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px 12px 12px; text-align: left;
+    border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent); border-radius: 16px;
+    background: color-mix(in srgb, var(--panel) 86%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(150%); backdrop-filter: blur(14px) saturate(150%);
+    box-shadow: 0 22px 54px -26px color-mix(in srgb, var(--accent) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    animation: toast-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both, toast-out 0.45s ease-in 4.2s forwards;
+  }
+  .toast[data-tone="comet"] { border-color: rgba(255, 200, 100, 0.5); box-shadow: 0 22px 54px -26px rgba(255, 190, 80, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+  .toast-icon {
+    flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; font-size: 1.35rem;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+  .toast[data-tone="comet"] .toast-icon { background: rgba(255, 200, 100, 0.14); }
+  .toast-body { display: grid; gap: 2px; min-width: 0; }
+  .toast-label { font: 500 0.625rem/1.4 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink); }
+  .toast[data-tone="comet"] .toast-label { color: #ffcf73; }
+  .toast b { font-weight: 700; font-size: 0.9375rem; color: var(--fg); }
+  .toast-body > span:last-child { font-size: 0.8125rem; line-height: 1.4; color: var(--mute); }
+
+  /* местное время в первом экране */
+  .clock-pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--line2); border-radius: 999px;
+    font: 500 0.75rem/1 var(--font-mono); color: var(--mute); background: color-mix(in srgb, var(--panel) 50%, transparent);
+  }
+  .clock-pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  .clock-pill[data-night] i { background: var(--violet); box-shadow: 0 0 10px var(--violet); }
+  .clock-pill time { color: var(--fg); font-variant-numeric: tabular-nums; }
+}
+
+/* гиперпрыжок */
+.jump { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 450; pointer-events: none; animation: jump 1.7s ease-in-out both; }
+@keyframes jump { 0% { opacity: 0; } 12%, 70% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes fab-prog { to { stroke-dashoffset: 0; } }
+@keyframes eq { from { height: 3px; } to { height: 14px; } }
+@keyframes toast-in { from { opacity: 0; translate: 30px 0; scale: 0.96; } }
+@keyframes toast-out { to { opacity: 0; translate: 24px 0; } }
+
+/* ───────── красота (только ПК): туманность, стекло с подсвеченными краями, градиенты, рассвет над планетой ─────────
+   На телефоне ничего из этого нет — там прежний вид. */
+.nebula, .foot-sky, .foot-planet, .bg-flares { display: none; }
+@media (min-width: 1024px) {
+  :root { --glass-drop: rgba(0, 0, 0, 0.9); --well: rgba(0, 0, 0, 0.42); }
+  :root[data-theme="light"] { --glass-drop: rgba(40, 36, 80, 0.16); --well: rgba(40, 36, 80, 0.07); }
+
+  /* туманность проявляется после первого кадра; лёгкая виньетка даёт глубину по краям */
+  .nebula { display: block; position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.6s ease; }
+  .nebula[data-on] { opacity: 1; }
+  .bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(130% 95% at 50% 42%, transparent 58%, rgba(2, 2, 6, 0.5)); }
+  :root[data-theme="light"] .bg::after { display: none; }
+  /* яркие звёзды с лучами-«крестами», как на снимках телескопа */
+  .bg-flares { display: block; position: absolute; inset: 0; }
+  .bg-flares i {
+    position: absolute; left: var(--x); top: var(--y); width: calc(var(--s) * 9px); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, rgba(230, 224, 255, 0.95) 22%, rgba(160, 145, 255, 0.35) 48%, transparent 72%);
+    box-shadow: 0 0 calc(var(--s) * 26px) calc(var(--s) * 4px) rgba(139, 123, 255, 0.28);
+  }
+  .bg-flares i::before, .bg-flares i::after { content: ""; position: absolute; left: 50%; top: 50%; translate: -50% -50%; }
+  .bg-flares i::before { width: calc(var(--s) * 120px); height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85) 50%, transparent); }
+  .bg-flares i::after { width: 1px; height: calc(var(--s) * 120px); background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.85) 50%, transparent); }
+  :root[data-theme="light"] .bg-flares { display: none; }
+  html { scrollbar-color: color-mix(in srgb, var(--accent) 50%, transparent) transparent; }
+  /* текст прямо на фоне — с ореолом цвета фона, чтобы туманность за ним не мешала читать */
+  .sec-lead, .more-head p, .stack-head p, .foot-cta .note, .sec-meta { text-shadow: 0 0 18px var(--bg), 0 0 5px var(--bg); }
+
+  /* стекло: верхний край светлее нижнего (свет сверху), в углу — цветной отсвет, снизу — мягкое свечение */
+  .panel, .card, .m-item, .stack, .channels, .pager-link, .more-item {
+    border-color: color-mix(in srgb, var(--fg) 17%, transparent) color-mix(in srgb, var(--fg) 8%, transparent) color-mix(in srgb, var(--fg) 4%, transparent);
+    background:
+      radial-gradient(120% 70% at 0% 0%, color-mix(in srgb, var(--tint, var(--accent)) 10%, transparent), transparent 60%),
+      linear-gradient(180deg, color-mix(in srgb, var(--fg) 6%, transparent), color-mix(in srgb, var(--fg) 1%, transparent) 55%),
+      color-mix(in srgb, var(--panel) 66%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--fg) 9%, transparent),
+      0 40px 80px -50px var(--glass-drop),
+      0 26px 70px -52px color-mix(in srgb, var(--tint, var(--accent)) 60%, transparent);
+  }
+  .bento > li:nth-child(3n + 2) .card, .method-grid > li:nth-child(even), .more-list > li:nth-child(3n + 2) .more-item { --tint: var(--cyan); }
+  .bento > li:nth-child(3n) .card, .more-list > li:nth-child(3n) .more-item { --tint: #ff7ad9; }
+  .top-in, .status-pill, .clock-pill, .fab-btn, .kbd-btn, .theme-pill, .langs {
+    border-color: color-mix(in srgb, var(--fg) 18%, transparent) color-mix(in srgb, var(--fg) 9%, transparent) color-mix(in srgb, var(--fg) 6%, transparent);
+  }
+  .viz { box-shadow: inset 0 1px 0 color-mix(in srgb, var(--fg) 6%, transparent), inset 0 -40px 50px -40px var(--glass-drop); }
+  /* бегущая строка — плотная лента: контурные слова залиты цветом фона и должны с ней совпадать */
+  .mq {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 86%, transparent), color-mix(in srgb, var(--bg) 93%, transparent));
+    border-block-color: color-mix(in srgb, var(--fg) 12%, transparent) color-mix(in srgb, var(--fg) 7%, transparent);
+  }
+  /* ядро орбит — глянцевая планета, как шар первого экрана */
+  .orbit-core {
+    background: radial-gradient(circle at 32% 26%, #ffffff 0%, #e6e0ff 5%, #a594ff 20%, #5a45d6 42%, #221a5c 66%, #0b0918 88%);
+    box-shadow: inset -12px -16px 34px rgba(0, 0, 0, 0.55), inset 6px 8px 18px rgba(255, 255, 255, 0.16), 0 0 70px color-mix(in srgb, var(--accent) 55%, transparent), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  }
+
+  /* главные кнопки — градиент с бликом сверху; каждая точка градиента держит контраст с белым текстом не ниже 4.5:1 */
+  .btn--solid, .nav-cta, .lang[aria-current="true"] { background: linear-gradient(120deg, #6c5ce7 0%, #5a45df 50%, #7a3fd0 100%); }
+  .btn--solid, .nav-cta {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(139, 123, 255, 0.35), 0 14px 36px -14px rgba(124, 104, 255, 0.85);
+  }
+  .btn--solid:hover, .nav-cta:hover {
+    background: linear-gradient(120deg, #6c5ce7 0%, #6450ea 50%, #8547dc 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(160, 145, 255, 0.5), 0 20px 52px -12px rgb(124, 104, 255);
+  }
+
+  /* заголовки разделов — белое в лаванду сверху вниз (у каждой буквы свой фон: буквы двигаются по отдельности) */
+  .sec-head h2 .sh-c {
+    padding-block: 0.14em; margin-block: -0.14em;
+    background: linear-gradient(180deg, #ffffff 30%, #cbc3f7 92%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  :root[data-theme="light"] .sec-head h2 .sh-c { background: linear-gradient(180deg, #0e0e16 40%, #463d78 92%); -webkit-background-clip: text; background-clip: text; }
+
+  /* большие цифры — светятся */
+  .numbers .stats dd {
+    background: linear-gradient(180deg, #ffffff 12%, #d2caff 62%, #9d8cff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 22px rgba(139, 123, 255, 0.35));
+  }
+  :root[data-theme="light"] .numbers .stats dd { filter: none; }
+
+  /* поля ввода — углублённые «колодцы», при фокусе светятся */
+  .scan-in textarea, .field textarea, .field input {
+    background: color-mix(in srgb, var(--bg) 58%, transparent);
+    border-color: color-mix(in srgb, var(--fg) 7%, transparent) color-mix(in srgb, var(--fg) 9%, transparent) color-mix(in srgb, var(--fg) 15%, transparent);
+    box-shadow: inset 0 2px 12px var(--well);
+    caret-color: var(--accent-ink);
+  }
+  .scan-in textarea:focus-visible, .field textarea:focus-visible, .field input:focus-visible {
+    border-color: var(--accent);
+    box-shadow: inset 0 2px 12px var(--well), 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent), 0 0 34px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+
+  /* луч-горизонт над каждым разделом: яркий центр, гаснущие края, мягкое свечение */
+  .sec::after {
+    content: ""; position: absolute; z-index: -1; left: 50%; top: 0; width: min(1180px, 92vw); height: 44px; translate: -50% -50%; pointer-events: none;
+    background:
+      linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 45%, transparent) 28%, color-mix(in srgb, var(--accent-ink) 30%, #fff) 50%, color-mix(in srgb, var(--accent) 45%, transparent) 72%, transparent) center / 100% 1px no-repeat,
+      radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--accent) 24%, transparent), transparent) center / 56% 100% no-repeat;
+    opacity: 0.6;
+  }
+
+  /* подвал: рассвет над краем планеты. Зарево — позади «utkir», планета — перед ним: при прокрутке до конца
+     огромное слово поднимается из-за горизонта */
+  .foot { isolation: isolate; --hz: calc(clamp(3.6rem, 16vw, 14rem) * 0.22); }
+  .foot-sky {
+    display: block; position: absolute; z-index: -1; left: 50%; bottom: 0; width: 130%; height: 82%; translate: -50% 0; pointer-events: none;
+    transform-origin: 50% 100%;
+    background:
+      radial-gradient(38% 46% at 50% 100%, rgba(255, 200, 176, 0.2), transparent 72%),
+      radial-gradient(58% 80% at 50% 100%, rgba(139, 123, 255, 0.36), transparent 72%),
+      radial-gradient(90% 100% at 50% 100%, rgba(103, 212, 255, 0.09), transparent 76%);
+  }
+  .foot-planet {
+    display: block; position: absolute; z-index: 1; left: 50%; top: calc(100% - var(--hz)); width: 260vw; aspect-ratio: 1; translate: -50% 0;
+    border-radius: 50%; pointer-events: none;
+    background: linear-gradient(180deg, #110d24 0%, #07060f 4%, #040308 16%);
+    box-shadow:
+      inset 0 3px 2px -1px rgba(240, 234, 255, 0.92),
+      inset 0 22px 40px -18px rgba(170, 150, 255, 0.6),
+      inset 0 70px 110px -60px rgba(103, 212, 255, 0.22),
+      0 -2px 12px rgba(196, 181, 253, 0.55),
+      0 -16px 50px rgba(139, 123, 255, 0.4),
+      0 -50px 140px rgba(108, 92, 231, 0.26);
+  }
+  /* солнце выглядывает из-за края, длинный блик вдоль горизонта */
+  .foot-planet::before {
+    content: ""; position: absolute; left: 50%; top: 0; width: 46vw; height: 190px; translate: -50% -50%;
+    background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(238, 230, 255, 0.62) 13%, rgba(176, 156, 255, 0.24) 42%, transparent 100%);
+  }
+  .foot-planet::after {
+    content: ""; position: absolute; left: 50%; top: -1px; width: 38vw; height: 2px; translate: -50% 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85) 50%, transparent);
+  }
+  .wordmark[data-light] {
+    background:
+      radial-gradient(260px circle at var(--lx, -999px) var(--ly, -999px), color-mix(in srgb, var(--accent) 90%, transparent), transparent 70%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.9) 10%, rgba(214, 205, 255, 0.5) 52%, rgba(139, 123, 255, 0.16) 82%);
+    -webkit-background-clip: text; background-clip: text;
+  }
+  :root[data-theme="light"] .wordmark[data-light] {
+    background:
+      radial-gradient(260px circle at var(--lx, -999px) var(--ly, -999px), color-mix(in srgb, var(--accent) 90%, transparent), transparent 70%),
+      linear-gradient(180deg, rgba(14, 14, 22, 0.86) 10%, rgba(70, 61, 120, 0.42) 60%, rgba(108, 92, 231, 0.14) 85%);
+    -webkit-background-clip: text; background-clip: text;
+  }
+  :root[data-theme="light"] .foot-sky {
+    background:
+      radial-gradient(40% 50% at 50% 100%, rgba(255, 170, 200, 0.22), transparent 72%),
+      radial-gradient(60% 82% at 50% 100%, rgba(108, 92, 231, 0.2), transparent 72%);
+  }
+  :root[data-theme="light"] .foot-planet {
+    background: linear-gradient(180deg, #ffffff 0%, #f1effa 5%, #e9e6f6 18%);
+    box-shadow: inset 0 3px 2px -1px #ffffff, inset 0 22px 40px -18px rgba(108, 92, 231, 0.22), 0 -2px 12px rgba(108, 92, 231, 0.35), 0 -18px 60px rgba(108, 92, 231, 0.18);
+  }
+  :root[data-theme="light"] .foot-planet::before { background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(196, 181, 253, 0.45) 30%, transparent 100%); }
+  :root[data-theme="light"] .foot-planet::after { background: linear-gradient(90deg, transparent, rgba(108, 92, 231, 0.5) 50%, transparent); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .sec::after { animation: beam-in linear both; animation-timeline: --sec; animation-range: entry 0% cover 22%; }
+      .bg-flares i { animation: flare 6s ease-in-out infinite alternate; animation-delay: var(--d); }
+      .foot-sky { animation: sky-in linear both; animation-timeline: --foot; animation-range: entry 15% entry 100%; }
+      .foot-planet { animation: planet-rise linear both; animation-timeline: --foot; animation-range: entry 25% entry 100%; }
+      .foot-planet::before { animation: glare-in linear both; animation-timeline: --foot; animation-range: entry 55% entry 100%; }
+    }
+  }
+}
+@keyframes beam-in { from { opacity: 0; scale: 0.15 1; } }
+@keyframes flare { from { opacity: 0.45; scale: 0.8; } to { opacity: 1; scale: 1.08; } }
+@keyframes sky-in { from { opacity: 0; scale: 1 0.55; } }
+@keyframes planet-rise { from { translate: -50% 70px; } }
+@keyframes glare-in { from { opacity: 0.15; scale: 0.5 0.7; } }

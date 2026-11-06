@@ -5,6 +5,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "rea
 import type { Dict } from "@/content/dict";
 import { links, localeNames, locales, type Locale } from "@/content/i18n";
 import { useModKey } from "@/lib/platform";
+import { SOUND_TOGGLE } from "@/lib/sound";
 import { setLocaleCookie, toggleTheme } from "@/lib/theme";
 
 export const OPEN_PALETTE = "utkir:palette";
@@ -69,6 +70,29 @@ export function CommandPalette({ lang, t, nav, projects, shortcuts, onShortcuts,
       window.open(href, "_blank", "noopener,noreferrer");
     };
     const rest = pathname.replace(/^\/(ru|uz|en)(?=\/|$)/, "");
+    const emit = (name: string) => () => {
+      onClose();
+      window.dispatchEvent(new Event(name));
+    };
+    // звук и гиперпрыжок есть только на ПК (палитра открывается лишь в браузере — window есть)
+    const pc = window.matchMedia("(min-width: 1024px)").matches;
+    const fun: Item[] = pc
+      ? [
+          { id: "sound", group: t.actions, label: t.sound, hint: "♪", icon: I.act, run: emit(SOUND_TOGGLE) },
+          {
+            id: "jump",
+            group: t.actions,
+            label: t.jump,
+            hint: "✦",
+            icon: I.act,
+            run: () => {
+              onClose();
+              void import("@/lib/hyperjump").then((m) => m.hyperjump());
+              void import("@/lib/sound").then((m) => m.sfx("jump"));
+            },
+          },
+        ]
+      : [];
     return [
       { id: "top", group: t.sections, label: t.home, hint: "~/", icon: I.hash, run: section("top") },
       { id: "demo", group: t.sections, label: t.demo, hint: "#demo", icon: I.hash, run: section("demo") },
@@ -98,6 +122,7 @@ export function CommandPalette({ lang, t, nav, projects, shortcuts, onShortcuts,
           onClose();
         },
       },
+      ...fun,
       { id: "keys", group: t.actions, label: shortcuts, hint: "?", icon: I.act, run: onShortcuts },
       { id: "gh", group: t.actions, label: t.github, hint: "xzboq", icon: I.act, run: ext(links.github) },
       { id: "tg", group: t.actions, label: t.telegram, hint: "@princess_scammer", icon: I.act, run: ext(links.telegram) },

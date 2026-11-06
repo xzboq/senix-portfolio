@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { Channels } from "@/components/Channels";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
+import { HeroTitle } from "@/components/HeroTitle";
 import { LazyGame } from "@/components/LazyGame";
+import { LocalTime } from "@/components/LocalTime";
 import { Manifesto } from "@/components/Manifesto";
 import { Marquee } from "@/components/Marquee";
 import { Method } from "@/components/Method";
@@ -57,14 +59,9 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <i aria-hidden="true" />
               {d.hero.open}
             </span>
+            <LocalTime t={d.fun} />
           </p>
-          <h1 id="hero-h" className="mega">
-            <span className="mega-l">{d.hero.mega[0]}</span>
-            <span className="mega-l">
-              {d.hero.mega[1]}
-              <span className="mega-dot">.</span>
-            </span>
-          </h1>
+          <HeroTitle lines={d.hero.mega} />
           <p className="hero-lead">
             <b>
               {d.hero.headline[0]} {d.hero.headline[1]}

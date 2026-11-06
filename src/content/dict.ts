@@ -38,6 +38,8 @@ const en = {
     telegram: "Open Telegram",
     empty: "Nothing found",
     hint: "↑↓ move · ↵ open · esc close",
+    sound: "Toggle space sound",
+    jump: "Hyperspace jump",
   },
   theme: { toggle: "Toggle theme", dark: "dark", light: "light" },
   demo: {
@@ -370,6 +372,19 @@ const en = {
   keys: { title: "Keyboard shortcuts", palette: "Command palette", search: "Search", theme: "Toggle theme", help: "This list", goto: "Go to section", then: "then", close: "Close" },
   more: { title: "More projects", lead: "Smaller things and experiments — no separate page, but real code.", source: "Source" },
   flowLabels: { in: "input", out: "output" },
+  fun: {
+    tools: "Site tools",
+    sound: "Space sound",
+    soundOn: "Sound on",
+    soundOff: "Sound off",
+    toTop: "Back to top",
+    cometLabel: "Golden comet",
+    comet: "Comet caught!",
+    cometCount: "comets caught: {n}",
+    city: "Chirchiq",
+    day: "online",
+    night: "night here — I'll reply in the morning",
+  },
 };
 
 export type Dict = typeof en;
@@ -411,6 +426,8 @@ const ru: Dict = {
     telegram: "Открыть Telegram",
     empty: "Ничего не найдено",
     hint: "↑↓ выбор · ↵ открыть · esc закрыть",
+    sound: "Звук космоса: вкл / выкл",
+    jump: "Гиперпрыжок",
   },
   theme: { toggle: "Сменить тему", dark: "тёмная", light: "светлая" },
   demo: {
@@ -735,6 +752,19 @@ const ru: Dict = {
   keys: { title: "Горячие клавиши", palette: "Палитра команд", search: "Поиск", theme: "Сменить тему", help: "Этот список", goto: "Перейти к разделу", then: "затем", close: "Закрыть" },
   more: { title: "Ещё проекты", lead: "Проекты поменьше и эксперименты — без отдельной страницы, но с настоящим кодом.", source: "Код" },
   flowLabels: { in: "вход", out: "выход" },
+  fun: {
+    tools: "Инструменты сайта",
+    sound: "Звук космоса",
+    soundOn: "Включить звук",
+    soundOff: "Выключить звук",
+    toTop: "Наверх",
+    cometLabel: "Золотая комета",
+    comet: "Комета поймана!",
+    cometCount: "поймано комет: {n}",
+    city: "Чирчик",
+    day: "на связи",
+    night: "ночь — отвечу утром",
+  },
 };
 
 const uz: Dict = {
@@ -774,6 +804,8 @@ const uz: Dict = {
     telegram: "Telegramni ochish",
     empty: "Hech narsa topilmadi",
     hint: "↑↓ tanlash · ↵ ochish · esc yopish",
+    sound: "Koinot sadosi: yoqish / oʻchirish",
+    jump: "Giper sakrash",
   },
   theme: { toggle: "Mavzuni almashtirish", dark: "qorongʻi", light: "yorugʻ" },
   demo: {
@@ -1098,6 +1130,19 @@ const uz: Dict = {
   keys: { title: "Tezkor tugmalar", palette: "Buyruqlar paneli", search: "Qidiruv", theme: "Mavzuni almashtirish", help: "Shu roʻyxat", goto: "Boʻlimga oʻtish", then: "keyin", close: "Yopish" },
   more: { title: "Yana loyihalar", lead: "Kichikroq loyihalar va tajribalar — alohida sahifasiz, lekin haqiqiy kod bilan.", source: "Kod" },
   flowLabels: { in: "kirish", out: "chiqish" },
+  fun: {
+    tools: "Sayt asboblari",
+    sound: "Koinot sadosi",
+    soundOn: "Ovozni yoqish",
+    soundOff: "Ovozni oʻchirish",
+    toTop: "Yuqoriga",
+    cometLabel: "Oltin kometa",
+    comet: "Kometa tutildi!",
+    cometCount: "tutilgan kometalar: {n}",
+    city: "Chirchiq",
+    day: "aloqadaman",
+    night: "hozir tun — ertalab javob beraman",
+  },
 };
 
 export const dictionaries: Record<Locale, Dict> = { ru, uz, en };

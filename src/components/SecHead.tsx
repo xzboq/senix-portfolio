@@ -1,7 +1,8 @@
 import { Fragment, type CSSProperties } from "react";
 
 /** Шапка раздела. Заголовок разбит на буквы (--i — порядковый номер): на ПК они по очереди
- *  выезжают при прокрутке. Имя заголовка для скринридеров — целиком из aria-label. */
+ *  выезжают при прокрутке. Имя заголовка для скринридеров — целиком из aria-label.
+ *  data-n — номер раздела: на ПК он же огромной контурной цифрой плывёт за шапкой. */
 export function SecHead({ id, n, path, title, lead }: { id: string; n: string; path: string; title: string; lead?: string }) {
   const words: { ch: string; i: number }[][] = [];
   let i = 0;
@@ -11,7 +12,7 @@ export function SecHead({ id, n, path, title, lead }: { id: string; n: string; p
     words.push(letters);
   }
   return (
-    <header className="sec-head">
+    <header className="sec-head" data-n={n}>
       <p className="sec-meta" aria-hidden="true">
         <span className="sec-n">{n}</span>
         <span className="sec-sep">/</span>

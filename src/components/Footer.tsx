@@ -5,6 +5,8 @@ import { links, type Locale } from "@/content/i18n";
 export function Footer({ d, lang }: { d: Dict; lang: Locale }) {
   return (
     <footer className="foot">
+      {/* ПК: зарево атмосферы позади огромного «utkir», край планеты с рассветом — перед ним */}
+      <div className="foot-sky" aria-hidden="true" />
       <div className="wrap">
         <div className="foot-grid">
           <div className="foot-cta">
@@ -24,6 +26,7 @@ export function Footer({ d, lang }: { d: Dict; lang: Locale }) {
         </div>
         <p className="wordmark" aria-hidden="true" data-light>utkir</p>
       </div>
+      <div className="foot-planet" aria-hidden="true" />
     </footer>
   );
 }

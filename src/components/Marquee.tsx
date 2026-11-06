@@ -1,5 +1,6 @@
 /** Две бегущие строки встречным курсом: огромные контурные слова «что я делаю» и под ними стек.
- *  Ленты продублированы и сдвигаются на 50% — бесшовно. Только CSS (transform), без JS. */
+ *  Ленты продублированы и сдвигаются на 50% — бесшовно. Движение — CSS (transform); на ПК огромная
+ *  строка ещё и кренится на скорости прокрутки (data-sv: переменную --sv пишет Warp.tsx). */
 function Row({ items, hidden }: { items: string[]; hidden?: boolean }) {
   return (
     <ul className="mq-row" aria-hidden={hidden || undefined}>
@@ -16,7 +17,7 @@ function Row({ items, hidden }: { items: string[]; hidden?: boolean }) {
 export function Marquee({ words, items }: { words: string[]; items: string[] }) {
   return (
     <div className="mq">
-      <div className="mq-line mq-line--big">
+      <div className="mq-line mq-line--big" data-sv>
         <div className="mq-track">
           <Row items={words} />
           <Row items={words} hidden />
