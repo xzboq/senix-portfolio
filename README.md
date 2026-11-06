@@ -45,4 +45,3 @@ npm run verify           # lint + build + check — то же, что делае
 
 - `NEXT_PUBLIC_SITE_URL` — адрес сайта для canonical, OG и sitemap (CI задаёт сам).
 - `NEXT_PUBLIC_BASE_PATH` — подпапка на GitHub Pages, например `/senix-portfolio` (CI задаёт сам).
-- `NEXT_PUBLIC_FORM_ENDPOINT` — адрес формы FormSubmit вместо `links.form` из `src/content/i18n.ts`.

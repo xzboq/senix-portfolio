@@ -85,14 +85,17 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </a>
       </section>
 
-      <Marquee items={STACK} />
+      <Marquee words={d.hero.services} items={STACK} />
 
       <div className="wrap numbers">
         <dl className="stats">
           {stats.map((s) => (
             <div key={s.k}>
               <dt>{s.k}</dt>
-              <dd>{s.v}</dd>
+              <dd>
+                <span className="count" style={{ ["--to" as string]: Number(s.v) }} aria-hidden="true" />
+                <span className="sr">{s.v}</span>
+              </dd>
             </div>
           ))}
         </dl>

@@ -24,9 +24,4 @@ export const links = {
   repo: "https://github.com/xzboq/senix-portfolio",
   telegram: "https://t.me/princess_scammer",
   instagram: "https://instagram.com/princess_scamer",
-  // FormSubmit: без БД и собственного бэкенда. Адрес можно заменить на алиас из письма FormSubmit,
-  // тогда почта не попадёт даже в JS-бандл.
-  form:
-    process.env.NEXT_PUBLIC_FORM_ENDPOINT ??
-    "https://formsubmit.co/ajax/senixsteaam@gmail.com",
 } as const;

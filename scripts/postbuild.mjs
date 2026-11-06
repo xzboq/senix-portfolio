@@ -3,6 +3,9 @@
 //    application/octet-stream — Telegram и соцсети такие превью не показывают.
 //    Копируем их в *.png и переписываем ссылки в мета-тегах.
 // 2. Корневой index.html (выбор языка) получает абсолютные адреса для превью ссылки.
+// 3. Файлы предзагрузки сегментов Next пишет вложенными папками (__next.$d$lang/__PAGE__.txt),
+//    а клиент запрашивает их плоским именем (__next.$d$lang.__PAGE__.txt) — без копии каждая
+//    страница даёт 404 в консоли, и переход на страницу проекта не предзагружается.
 import { copyFileSync, existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -33,6 +36,18 @@ for (const f of files) {
   }
 }
 
+let segments = 0;
+for (const f of files) {
+  const parts = f.split(/[\\/]/);
+  const at = parts.findIndex((p, i) => p.startsWith("__next.") && i < parts.length - 1);
+  if (at === -1 || !f.endsWith(".txt")) continue;
+  const flat = join(...parts.slice(0, at), parts.slice(at).join("."));
+  if (!existsSync(flat)) {
+    copyFileSync(f, flat);
+    segments++;
+  }
+}
+
 const IMG_URL = new RegExp(`/(${IMAGE_FILES.join("|")})(\\?[^"]*)?"`, "g");
 let pages = 0;
 for (const f of files.filter((x) => x.endsWith(".html"))) {
@@ -45,4 +60,4 @@ for (const f of files.filter((x) => x.endsWith(".html"))) {
   }
 }
 
-console.log(`postbuild: ${images} OG images → .png, ${pages} pages updated (site ${SITE_URL})`);
+console.log(`postbuild: ${images} OG images → .png, ${segments} prefetch segments flattened, ${pages} pages updated (site ${SITE_URL})`);

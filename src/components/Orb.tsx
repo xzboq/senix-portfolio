@@ -52,6 +52,10 @@ export function Orb() {
 
   return (
     <div ref={ref} className="orb-wrap" aria-hidden="true">
+      <i className="orb-rays" />
+      <svg className="orb-ring orb-ring--alt" viewBox="0 0 600 600">
+        <ellipse cx="300" cy="300" rx="292" ry="66" />
+      </svg>
       <svg className="orb-ring" viewBox="0 0 600 600">
         <ellipse cx="300" cy="300" rx="292" ry="66" className="ring-glow" />
         <ellipse cx="300" cy="300" rx="292" ry="66" />

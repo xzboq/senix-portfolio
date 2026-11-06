@@ -4,56 +4,53 @@ import { useState, type FormEvent } from "react";
 import type { Dict } from "@/content/dict";
 import { links } from "@/content/i18n";
 
-type Status = "idle" | "sending" | "sent" | "error";
+/** Связь без бэкенда и без секретов в бандле: форма собирает текст и открывает чат со мной
+ *  в Telegram — t.me/<username>?text=… подставляет его в поле ввода, остаётся нажать «Отправить».
+ *  Текст ещё и копируется в буфер: на случай клиента, который не подставит его сам. */
+type Opened = { url: string; copied: boolean } | null;
 
 export function ContactForm({ t }: { t: Dict["contact"] }) {
-  const [status, setStatus] = useState<Status>("idle");
+  const [opened, setOpened] = useState<Opened>(null);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const fd = new FormData(form);
-    if (fd.get("_honey")) return; // бот
     const name = String(fd.get("name") ?? "").trim();
-    const reach = String(fd.get("reach") ?? "").trim();
+    const topic = String(fd.get("topic") ?? "").trim();
     const message = String(fd.get("message") ?? "").trim();
-    const errs = { name: !name, reach: !reach, message: !message };
+    const errs = { name: !name, message: !message };
     setErrors(errs);
-    if (errs.name || errs.reach || errs.message) return;
-
-    setStatus("sending");
-    try {
-      const res = await fetch(links.form, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name,
-          contact: reach,
-          message,
-          _subject: `Portfolio: message from ${name}`,
-          _captcha: "false",
-          _template: "table",
-        }),
-      });
-      if (!res.ok) throw new Error(String(res.status));
-      setStatus("sent");
-      form.reset();
-    } catch {
-      setStatus("error");
+    if (errs.name || errs.message) {
+      (form.elements.namedItem(errs.name ? "name" : "message") as HTMLElement | null)?.focus();
+      return;
     }
+
+    const lines = [t.hi.replace("{name}", name)];
+    if (topic) lines.push(`${t.about}: ${topic}`);
+    lines.push("", message, "", t.via);
+    const text = lines.join("\n");
+    const url = `${links.telegram}?text=${encodeURIComponent(text)}`;
+
+    setOpened({ url, copied: false });
+    // копируем до открытия вкладки, пока страница ещё в фокусе
+    navigator.clipboard
+      ?.writeText(text)
+      .then(() => setOpened((o) => (o ? { ...o, copied: true } : o)))
+      .catch(() => {});
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
-  const field = (id: "name" | "reach" | "message", label: string, hint?: string) => (
+  const field = (id: "name" | "message", label: string) => (
     <div className="field">
       <label htmlFor={`f-${id}`} className="label">
         {label}
-        {hint ? <span className="hint"> · {hint}</span> : null}
       </label>
       {id === "message" ? (
-        <textarea id={`f-${id}`} name={id} maxLength={3000} aria-invalid={errors[id] || undefined} aria-describedby={errors[id] ? `e-${id}` : undefined} />
+        <textarea id={`f-${id}`} name={id} maxLength={1000} aria-invalid={errors[id] || undefined} aria-describedby={errors[id] ? `e-${id}` : undefined} />
       ) : (
-        <input id={`f-${id}`} name={id} type="text" maxLength={200} autoComplete={id === "name" ? "name" : "email"} aria-invalid={errors[id] || undefined} aria-describedby={errors[id] ? `e-${id}` : undefined} />
+        <input id={`f-${id}`} name={id} type="text" maxLength={80} autoComplete="name" aria-invalid={errors[id] || undefined} aria-describedby={errors[id] ? `e-${id}` : undefined} />
       )}
       {errors[id] && <span className="err" id={`e-${id}`}>{t.required}</span>}
     </div>
@@ -62,26 +59,41 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
   return (
     <form className="form panel" onSubmit={onSubmit} noValidate>
       <div className="form-body">
-      {field("name", t.name)}
-      {field("reach", t.reach, t.reachHint)}
-      {field("message", t.message)}
-      <input className="hp" type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-      <div className="form-actions">
-        <button type="submit" className="btn btn--solid" disabled={status === "sending"}>
-          {status === "sending" ? t.sending : t.send} <span className="arrow">→</span>
-        </button>
-        <p className="form-msg" role="status" data-t={status === "sent" ? "ok" : status === "error" ? "err" : undefined}>
-          {status === "sent" && t.sent}
-          {status === "error" && (
-            <>
-              {t.fail}{" "}
-              <a className="tlink" href={links.telegram} target="_blank" rel="noopener noreferrer">
-                @princess_scammer
-              </a>
-            </>
-          )}
-        </p>
-      </div>
+        {field("name", t.name)}
+        <fieldset className="field">
+          <legend className="label">
+            {t.topic}
+            <span className="hint"> · {t.optional}</span>
+          </legend>
+          <div className="chips">
+            {t.topics.map((tp) => (
+              <label key={tp} className="chip chip-opt">
+                <input type="radio" name="topic" value={tp} />
+                {tp}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        {field("message", t.message)}
+        <div className="form-actions">
+          <button type="submit" className="btn btn--solid">
+            {t.send} <span className="arrow" aria-hidden="true">→</span>
+          </button>
+          <p className="form-msg" role="status" data-t={opened ? "ok" : undefined}>
+            {opened && (
+              <>
+                {t.opened}
+                {opened.copied && <> {t.copied}</>}{" "}
+                <span className="form-retry">
+                  {t.notOpened}{" "}
+                  <a className="tlink" href={opened.url} target="_blank" rel="noopener noreferrer">
+                    {t.openChat}
+                  </a>
+                </span>
+              </>
+            )}
+          </p>
+        </div>
       </div>
     </form>
   );
