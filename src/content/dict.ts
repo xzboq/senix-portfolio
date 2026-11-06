@@ -44,6 +44,10 @@ const en = {
     title: "Live demo",
     lead: "The real scoring engine of my anti-fraud bot, running right in this tab. Paste anything — nothing leaves your device.",
   },
+  manifesto: {
+    label: "manifesto",
+    text: "I don’t make mockups — I make things that *actually work*. Telegram bots, websites, mini apps and games, from idea to release, built by hand. I’m 13, and I’m only *getting started*.",
+  },
   stats: { projects: "shipped projects", tests: "automated tests", langs: "interface languages", age: "years old" },
   hero: {
     role: "Full-Stack Developer",
@@ -413,6 +417,10 @@ const ru: Dict = {
     title: "Живое демо",
     lead: "Настоящий движок оценки из моего антифрод-бота работает прямо в этой вкладке. Вставьте что угодно — ничего не уходит с вашего устройства.",
   },
+  manifesto: {
+    label: "манифест",
+    text: "Я не делаю макеты — я делаю вещи, которые *реально работают*. Telegram-боты, сайты, мини-аппы и игры — от идеи до релиза, своими руками. Мне 13, и я только *разгоняюсь*.",
+  },
   stats: { projects: "готовых проектов", tests: "автотеста", langs: "языка интерфейса", age: "лет" },
   hero: {
     role: "Full-Stack разработчик",
@@ -771,6 +779,10 @@ const uz: Dict = {
   demo: {
     title: "Jonli demo",
     lead: "Antifrod-botimning haqiqiy baholash dvigateli shu oynaning oʻzida ishlaydi. Istalgan narsani joylang — hech narsa qurilmangizdan chiqmaydi.",
+  },
+  manifesto: {
+    label: "manifest",
+    text: "Men maket chizmayman — men *haqiqatan ishlaydigan* narsalar yarataman. Telegram botlar, saytlar, mini-ilovalar va oʻyinlar — gʻoyadan relizgacha, oʻz qoʻlim bilan. Menga 13 yosh va men hali *endigina boshlayapman*.",
   },
   stats: { projects: "tayyor loyiha", tests: "avtotest", langs: "interfeys tili", age: "yosh" },
   hero: {

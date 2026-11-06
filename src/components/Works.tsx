@@ -182,7 +182,7 @@ export function Works({ lang, d }: { lang: Locale; d: Dict }) {
             const t = p.text[lang];
             return (
               <li key={p.slug} className="rv">
-                <Link href={`/${lang}/projects/${p.slug}`} className="card" data-glow data-tilt transitionTypes={["nav-forward"]}>
+                <Link href={`/${lang}/projects/${p.slug}`} className="card" data-glow data-tilt data-cursor={d.ui.open} transitionTypes={["nav-forward"]}>
                   <ViewTransition name={`pv-${p.slug}`} share="morph" default="none">
                     <ProjectVisual p={p} lang={lang} d={d} />
                   </ViewTransition>

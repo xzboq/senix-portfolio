@@ -7,6 +7,7 @@ import { SITE_URL, isLocale, locales, ogLocale } from "@/content/i18n";
 import { projects } from "@/content/projects";
 import { bootScript, themeScript } from "@/lib/theme";
 import { Boot } from "@/components/Boot";
+import { Cursor } from "@/components/Cursor";
 import "../globals.css";
 
 const onest = Onest({ subsets: ["latin", "cyrillic"], variable: "--font-onest", display: "swap" });
@@ -92,6 +93,7 @@ export default async function RootLayout({
           labels={{ language: d.ui.language, mainNav: d.ui.mainNav, home: d.ui.home }}
           projects={projects.map((p) => ({ slug: p.slug, num: p.num, name: p.name, kind: p.text[lang].kind }))}
         />
+        <Cursor />
         <div className="page">
           <main id="main">{children}</main>
         </div>

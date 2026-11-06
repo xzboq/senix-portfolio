@@ -2,12 +2,17 @@
 
 import { useEffect, useRef } from "react";
 
-/** Глянцевый шар с орбитой в первом экране — чистый CSS/SVG, без WebGL.
- *  Задняя половина орбиты лежит за шаром, передняя — перед ним; спутник виден только на передней.
- *  На мыши шар чуть уходит от курсора, а блик смещается — получается объём. */
+/** Шар с орбитой в первом экране.
+ *  Базовая версия — чистый CSS/SVG: задняя половина орбиты лежит за шаром, передняя — перед ним.
+ *  На ПК (от 1024px), если есть WebGL и не просили «уменьшить движение», поверх включается
+ *  WebGL-версия из orb-gl.ts: стекло с туманностью, блик за курсором, орбита из частиц.
+ *  Её код грузится динамически — телефоны его не скачивают. */
 export function Orb() {
   const ref = useRef<HTMLDivElement>(null);
+  const glRef = useRef<HTMLCanvasElement>(null);
+  const ptr = useRef({ x: 0, y: 0 });
 
+  // на мыши шар чуть уходит от курсора, а блик смещается — получается объём
   useEffect(() => {
     const el = ref.current;
     const host = el?.parentElement;
@@ -23,6 +28,8 @@ export function Orb() {
     const loop = () => {
       x += (tx - x) * 0.07;
       y += (ty - y) * 0.07;
+      ptr.current.x = x;
+      ptr.current.y = y;
       el.style.setProperty("--ox", x.toFixed(3));
       el.style.setProperty("--oy", y.toFixed(3));
       raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.002 ? requestAnimationFrame(loop) : 0;
@@ -50,8 +57,43 @@ export function Orb() {
     };
   }, []);
 
+  // WebGL-шар — только на ПК
+  useEffect(() => {
+    const wrap = ref.current;
+    const canvas = glRef.current;
+    if (!wrap || !canvas) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    let stop: (() => void) | null = null;
+    let loading = false;
+    let gone = false;
+    const off = () => {
+      delete wrap.dataset.gl;
+    };
+    const init = () => {
+      if (stop || loading || !mq.matches) return;
+      loading = true;
+      import("./orb-gl")
+        .then(({ startOrbGL }) => {
+          if (gone) return;
+          stop = startOrbGL(canvas, ptr.current, off);
+          if (stop) wrap.dataset.gl = "";
+        })
+        .catch(off);
+    };
+    init();
+    mq.addEventListener("change", init);
+    return () => {
+      gone = true;
+      mq.removeEventListener("change", init);
+      stop?.();
+      off();
+    };
+  }, []);
+
   return (
     <div ref={ref} className="orb-wrap" aria-hidden="true">
+      <canvas ref={glRef} className="orb-gl" />
       <i className="orb-rays" />
       <svg className="orb-ring orb-ring--alt" viewBox="0 0 600 600">
         <ellipse cx="300" cy="300" rx="292" ry="66" />

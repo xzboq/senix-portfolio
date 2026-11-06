@@ -4,6 +4,7 @@ import { Channels } from "@/components/Channels";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
 import { LazyGame } from "@/components/LazyGame";
+import { Manifesto } from "@/components/Manifesto";
 import { Marquee } from "@/components/Marquee";
 import { Method } from "@/components/Method";
 import { Orb } from "@/components/Orb";
@@ -86,6 +87,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       </section>
 
       <Marquee words={d.hero.services} items={STACK} />
+      <Manifesto label={d.manifesto.label} text={d.manifesto.text} />
 
       <div className="wrap numbers">
         <dl className="stats">
