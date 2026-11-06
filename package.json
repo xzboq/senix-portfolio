@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/postbuild.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check": "node scripts/check-site.mjs",
+    "verify": "npm run lint && npm run build && npm run check"
   },
   "dependencies": {
     "next": "16.3.5",

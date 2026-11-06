@@ -27,6 +27,10 @@ jobs:
 
       - run: npm ci
 
+      # типы проверяет сам next build
+      - name: Lint
+        run: npm run lint
+
       # <user>.github.io живёт в корне, остальные репозитории — в /<имя>
       - name: Build
         run: |
@@ -39,6 +43,7 @@ jobs:
             export NEXT_PUBLIC_SITE_URL="https://${{ github.repository_owner }}.github.io/$REPO"
           fi
           npm run build
+          node scripts/check-site.mjs
           touch out/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3

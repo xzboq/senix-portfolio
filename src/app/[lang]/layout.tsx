@@ -1,19 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Onest } from "next/font/google";
+import { JetBrains_Mono, Onest, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Chrome } from "@/components/Chrome";
 import { getDict } from "@/content/dict";
 import { SITE_URL, isLocale, locales, ogLocale } from "@/content/i18n";
 import { projects } from "@/content/projects";
-import { themeScript } from "@/lib/theme";
+import { bootScript, themeScript } from "@/lib/theme";
+import { Boot } from "@/components/Boot";
 import "../globals.css";
 
 const onest = Onest({ subsets: ["latin", "cyrillic"], variable: "--font-onest", display: "swap" });
+// широкий дисплейный шрифт для крупных заголовков (вариативный, 200–900)
+const display = Unbounded({ subsets: ["latin", "cyrillic"], variable: "--font-display-src", display: "swap" });
 const mono = JetBrains_Mono({
   subsets: ["latin", "cyrillic"],
   weight: ["400", "500", "700"],
   variable: "--font-mono-src",
   display: "swap",
+  preload: false,
 });
 
 export function generateStaticParams() {
@@ -22,8 +26,8 @@ export function generateStaticParams() {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#0a0b0d" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0b0d" },
+    { media: "(prefers-color-scheme: light)", color: "#07070c" },
+    { media: "(prefers-color-scheme: dark)", color: "#07070c" },
   ],
 };
 
@@ -66,13 +70,15 @@ export default async function RootLayout({
   const d = getDict(lang);
 
   return (
-    <html lang={lang} className={`${onest.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang={lang} className={`${onest.variable} ${mono.variable} ${display.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>
       <body>
+        <Boot />
         <div className="bg" aria-hidden="true">
-          <div className="bg-grid" />
+          <div className="bg-stars" />
           <div className="bg-glow" />
           <div className="bg-noise" />
         </div>
@@ -82,6 +88,7 @@ export default async function RootLayout({
           nav={d.nav}
           cmd={d.cmd}
           theme={d.theme}
+          keys={d.keys}
           labels={{ language: d.ui.language, mainNav: d.ui.mainNav, home: d.ui.home }}
           projects={projects.map((p) => ({ slug: p.slug, num: p.num, name: p.name, kind: p.text[lang].kind }))}
         />

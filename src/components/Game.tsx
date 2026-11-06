@@ -132,8 +132,8 @@ export default function Game({ lang, t, verdicts, cards }: Props) {
 
       {phase === "idle" && (
         <div className="game-center">
-          <p className="big">{t.title}</p>
-          <p style={{ maxWidth: "46ch" }}>{t.lead}</p>
+          <p className="big">0:{DURATION}</p>
+          <p className="label">{t.hint}</p>
           <button type="button" className="btn btn--solid" onClick={start}>{t.start} <span className="arrow">→</span></button>
           {shownBest > 0 && <p className="label">{t.best}: {shownBest}</p>}
         </div>

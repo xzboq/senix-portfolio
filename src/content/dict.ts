@@ -15,8 +15,11 @@ const en = {
     home: "Utkir — home",
     back: "All works",
     nextWork: "Next work",
+    prevWork: "Previous work",
     open: "Open",
     external: "opens in a new tab",
+    demoError: "This demo failed to load.",
+    reload: "Reload",
   },
   nav: { works: "Works", method: "Method", play: "Play", contact: "Contact" },
   cmd: {
@@ -42,32 +45,6 @@ const en = {
     lead: "The real scoring engine of my anti-fraud bot, running right in this tab. Paste anything — nothing leaves your device.",
   },
   stats: { projects: "shipped projects", tests: "automated tests", langs: "interface languages", age: "years old" },
-  term: {
-    label: "Interactive terminal",
-    input: "Terminal command",
-    hint: "type help and press Enter",
-    help: "Available commands:",
-    cmds: {
-      help: "this list",
-      whoami: "who is Utkir",
-      ls: "list projects",
-      open: "open a project — open 1",
-      scan: "check a message — scan <text>",
-      stack: "tools I use",
-      contact: "how to reach me",
-      lang: "switch language — lang ru",
-      theme: "toggle light / dark",
-      neofetch: "system info",
-      clear: "clear the screen",
-    },
-    notFound: "command not found: {c} — try help",
-    openUsage: "usage: open <1-6 | name>",
-    opening: "opening {p}…",
-    scanUsage: "usage: scan <message or link>",
-    langUsage: "usage: lang ru | uz | en",
-    themeSet: "theme → {t}",
-    sudo: "permission denied: nice try 🙂",
-  },
   hero: {
     role: "Full-Stack Developer",
     headline: ["I write software", "that has to be right."],
@@ -84,6 +61,10 @@ const en = {
     baseValue: "Chirchiq, Uzbekistan",
     focusValue: "Web · Software · Mobile · Backend / Python · Full-Stack",
     toWorks: "See the works",
+    mega: ["Fullstack", "Developer"],
+    open: "Open to new projects",
+    write: "Write to me",
+    scroll: "Scroll",
   },
   scanner: {
     tag: "Kiber Yordamchi · Risk Engine",
@@ -166,7 +147,7 @@ const en = {
   },
   toolbox: {
     title: "Toolbox",
-    lead: "No percentages. A filled mark means the tool is actually used in that project.",
+    lead: "No percentages: the inner orbit holds my main tools, the outer one the additional ones. On the right — where each is actually used.",
     projects: ["Kiber Yordamchi", "SenixSearch", "WishPool", "Weather", "Drift", "Fresh", "This site"],
     primary: "Primary",
     additional: "Additional",
@@ -230,8 +211,11 @@ const en = {
   footer: {
     place: "Utkir · Chirchiq, Uzbekistan",
     colophon:
-      "Next.js 16 and React 19, no UI kit. No 3D on purpose: the heaviest thing here is the engine, and it runs on your device.",
+      "Next.js 16 and React 19, no UI kit, static export to GitHub Pages. Before every deploy a script checks every link and page. The heaviest thing here is the engine — and it runs on your device.",
     top: "Back to top",
+    shortcuts: "shortcuts",
+    built: "built",
+    source: "source",
   },
   project: {
     spec: "Spec sheet",
@@ -251,6 +235,7 @@ const en = {
     features: "What it does",
     honest: "Honest notes",
     facts: "In numbers",
+    toc: "On this page",
   },
   lab: {
     kiber: {
@@ -372,6 +357,7 @@ const en = {
       },
     },
   },
+  keys: { title: "Keyboard shortcuts", palette: "Command palette", search: "Search", theme: "Toggle theme", help: "This list", goto: "Go to section", then: "then", close: "Close" },
   more: { title: "More projects", lead: "Smaller things and experiments — no separate page, but real code.", source: "Source" },
   flowLabels: { in: "input", out: "output" },
 };
@@ -392,8 +378,11 @@ const ru: Dict = {
     home: "Уткир — главная",
     back: "Все работы",
     nextWork: "Следующая работа",
+    prevWork: "Предыдущая работа",
     open: "Открыть",
     external: "откроется в новой вкладке",
+    demoError: "Демо не загрузилось.",
+    reload: "Перезагрузить",
   },
   nav: { works: "Работы", method: "Подход", play: "Игра", contact: "Связь" },
   cmd: {
@@ -419,32 +408,6 @@ const ru: Dict = {
     lead: "Настоящий движок оценки из моего антифрод-бота работает прямо в этой вкладке. Вставьте что угодно — ничего не уходит с вашего устройства.",
   },
   stats: { projects: "готовых проектов", tests: "автотеста", langs: "языка интерфейса", age: "лет" },
-  term: {
-    label: "Интерактивный терминал",
-    input: "Команда терминала",
-    hint: "введите help и нажмите Enter",
-    help: "Доступные команды:",
-    cmds: {
-      help: "этот список",
-      whoami: "кто такой Уткир",
-      ls: "список проектов",
-      open: "открыть проект — open 1",
-      scan: "проверить сообщение — scan <текст>",
-      stack: "мои инструменты",
-      contact: "как со мной связаться",
-      lang: "сменить язык — lang en",
-      theme: "светлая / тёмная тема",
-      neofetch: "сведения о системе",
-      clear: "очистить экран",
-    },
-    notFound: "команда не найдена: {c} — попробуйте help",
-    openUsage: "использование: open <1-6 | имя>",
-    opening: "открываю {p}…",
-    scanUsage: "использование: scan <сообщение или ссылка>",
-    langUsage: "использование: lang ru | uz | en",
-    themeSet: "тема → {t}",
-    sudo: "доступ запрещён: хорошая попытка 🙂",
-  },
   hero: {
     role: "Full-Stack разработчик",
     headline: ["Пишу софт,", "который обязан работать верно."],
@@ -460,7 +423,11 @@ const ru: Dict = {
     ageValue: "13",
     baseValue: "Чирчик, Узбекистан",
     focusValue: "Web · Software · Mobile · Backend / Python · Full-Stack",
-    toWorks: "К работам",
+    toWorks: "Смотреть проекты",
+    mega: ["Fullstack", "Разработчик"],
+    open: "Открыт к новым проектам",
+    write: "Написать мне",
+    scroll: "Прокручивайте",
   },
   scanner: {
     tag: "Kiber Yordamchi · Risk Engine",
@@ -543,7 +510,7 @@ const ru: Dict = {
   },
   toolbox: {
     title: "Инструменты",
-    lead: "Никаких процентов. Закрашенная метка значит, что инструмент реально используется в проекте.",
+    lead: "Никаких процентов: на ближней орбите — основные инструменты, на дальней — дополнительные. Справа — где каждый реально используется.",
     projects: ["Kiber Yordamchi", "SenixSearch", "WishPool", "Weather", "Drift", "Fresh", "Этот сайт"],
     primary: "Основные",
     additional: "Дополнительные",
@@ -599,8 +566,11 @@ const ru: Dict = {
   footer: {
     place: "Уткир · Чирчик, Узбекистан",
     colophon:
-      "Next.js 16 и React 19, без UI-кита. 3D намеренно нет: самое тяжёлое здесь — движок, и он работает на вашем устройстве.",
+      "Next.js 16 и React 19, без UI-кита, статический экспорт на GitHub Pages. Перед каждым деплоем скрипт проверяет все ссылки и страницы. Самое тяжёлое здесь — движок, и он работает на вашем устройстве.",
     top: "Наверх",
+    shortcuts: "горячие клавиши",
+    built: "сборка",
+    source: "код сайта",
   },
   project: {
     spec: "Паспорт",
@@ -620,6 +590,7 @@ const ru: Dict = {
     features: "Что умеет",
     honest: "Честные заметки",
     facts: "В цифрах",
+    toc: "На этой странице",
   },
   lab: {
     kiber: {
@@ -741,6 +712,7 @@ const ru: Dict = {
       },
     },
   },
+  keys: { title: "Горячие клавиши", palette: "Палитра команд", search: "Поиск", theme: "Сменить тему", help: "Этот список", goto: "Перейти к разделу", then: "затем", close: "Закрыть" },
   more: { title: "Ещё проекты", lead: "Проекты поменьше и эксперименты — без отдельной страницы, но с настоящим кодом.", source: "Код" },
   flowLabels: { in: "вход", out: "выход" },
 };
@@ -759,8 +731,11 @@ const uz: Dict = {
     home: "Utkir — bosh sahifa",
     back: "Barcha ishlar",
     nextWork: "Keyingi ish",
+    prevWork: "Oldingi ish",
     open: "Ochish",
     external: "yangi oynada ochiladi",
+    demoError: "Demo yuklanmadi.",
+    reload: "Qayta yuklash",
   },
   nav: { works: "Ishlar", method: "Yondashuv", play: "Oʻyin", contact: "Aloqa" },
   cmd: {
@@ -786,32 +761,6 @@ const uz: Dict = {
     lead: "Antifrod-botimning haqiqiy baholash dvigateli shu oynaning oʻzida ishlaydi. Istalgan narsani joylang — hech narsa qurilmangizdan chiqmaydi.",
   },
   stats: { projects: "tayyor loyiha", tests: "avtotest", langs: "interfeys tili", age: "yosh" },
-  term: {
-    label: "Interaktiv terminal",
-    input: "Terminal buyrugʻi",
-    hint: "help deb yozing va Enter bosing",
-    help: "Mavjud buyruqlar:",
-    cmds: {
-      help: "shu roʻyxat",
-      whoami: "Utkir kim",
-      ls: "loyihalar roʻyxati",
-      open: "loyihani ochish — open 1",
-      scan: "xabarni tekshirish — scan <matn>",
-      stack: "vositalarim",
-      contact: "men bilan aloqa",
-      lang: "tilni almashtirish — lang en",
-      theme: "yorugʻ / qorongʻi mavzu",
-      neofetch: "tizim haqida",
-      clear: "ekranni tozalash",
-    },
-    notFound: "buyruq topilmadi: {c} — help ni sinab koʻring",
-    openUsage: "foydalanish: open <1-6 | nom>",
-    opening: "{p} ochilmoqda…",
-    scanUsage: "foydalanish: scan <xabar yoki havola>",
-    langUsage: "foydalanish: lang ru | uz | en",
-    themeSet: "mavzu → {t}",
-    sudo: "ruxsat yoʻq: yaxshi urinish 🙂",
-  },
   hero: {
     role: "Full-Stack dasturchi",
     headline: ["Toʻgʻri ishlashi shart", "boʻlgan dasturlar yozaman."],
@@ -827,7 +776,11 @@ const uz: Dict = {
     ageValue: "13",
     baseValue: "Chirchiq, Oʻzbekiston",
     focusValue: "Web · Software · Mobile · Backend / Python · Full-Stack",
-    toWorks: "Ishlarga oʻtish",
+    toWorks: "Loyihalarni koʻrish",
+    mega: ["Fullstack", "Dasturchi"],
+    open: "Yangi loyihalarga ochiqman",
+    write: "Menga yozing",
+    scroll: "Pastga suring",
   },
   scanner: {
     tag: "Kiber Yordamchi · Risk Engine",
@@ -910,7 +863,7 @@ const uz: Dict = {
   },
   toolbox: {
     title: "Asboblar",
-    lead: "Foizlarsiz. Toʻldirilgan belgi — asbob loyihada haqiqatan ishlatilganini bildiradi.",
+    lead: "Foizlarsiz: yaqin orbitada — asosiy vositalar, uzoq orbitada — qoʻshimchalar. Oʻngda — har biri qayerda haqiqatan ishlatilgan.",
     projects: ["Kiber Yordamchi", "SenixSearch", "WishPool", "Weather", "Drift", "Fresh", "Ushbu sayt"],
     primary: "Asosiy",
     additional: "Qoʻshimcha",
@@ -966,8 +919,11 @@ const uz: Dict = {
   footer: {
     place: "Utkir · Chirchiq, Oʻzbekiston",
     colophon:
-      "Next.js 16 va React 19, UI-kitsiz. 3D ataylab yoʻq: bu yerda eng ogʻiri — dvigatel, u esa sizning qurilmangizda ishlaydi.",
+      "Next.js 16 va React 19, UI-kitsiz, GitHub Pages’ga statik eksport. Har bir deploydan oldin skript barcha havolalar va sahifalarni tekshiradi. Bu yerda eng ogʻiri — dvigatel, u esa sizning qurilmangizda ishlaydi.",
     top: "Yuqoriga",
+    shortcuts: "tezkor tugmalar",
+    built: "yigʻma",
+    source: "sayt kodi",
   },
   project: {
     spec: "Pasport",
@@ -987,6 +943,7 @@ const uz: Dict = {
     features: "Nimalar qila oladi",
     honest: "Ochiq eslatmalar",
     facts: "Raqamlarda",
+    toc: "Bu sahifada",
   },
   lab: {
     kiber: {
@@ -1108,6 +1065,7 @@ const uz: Dict = {
       },
     },
   },
+  keys: { title: "Tezkor tugmalar", palette: "Buyruqlar paneli", search: "Qidiruv", theme: "Mavzuni almashtirish", help: "Shu roʻyxat", goto: "Boʻlimga oʻtish", then: "keyin", close: "Yopish" },
   more: { title: "Yana loyihalar", lead: "Kichikroq loyihalar va tajribalar — alohida sahifasiz, lekin haqiqiy kod bilan.", source: "Kod" },
   flowLabels: { in: "kirish", out: "chiqish" },
 };

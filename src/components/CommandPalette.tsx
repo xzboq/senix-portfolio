@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Dict } from "@/content/dict";
 import { links, localeNames, locales, type Locale } from "@/content/i18n";
+import { useModKey } from "@/lib/platform";
 import { setLocaleCookie, toggleTheme } from "@/lib/theme";
 
 export const OPEN_PALETTE = "utkir:palette";
@@ -30,6 +31,11 @@ interface Props {
   t: Dict["cmd"];
   nav: Dict["nav"];
   projects: PaletteProject[];
+  /** Подпись пункта «Горячие клавиши». */
+  shortcuts: string;
+  onShortcuts: () => void;
+  /** Переход к разделу главной (плавная прокрутка, если он на этой странице). */
+  onSection: (id: string) => void;
   onClose: () => void;
 }
 
@@ -40,7 +46,7 @@ const I = {
   lang: <span className="pi">⌘</span>,
 };
 
-export function CommandPalette({ lang, t, nav, projects, onClose }: Props) {
+export function CommandPalette({ lang, t, nav, projects, shortcuts, onShortcuts, onSection, onClose }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const [q, setQ] = useState("");
@@ -54,21 +60,25 @@ export function CommandPalette({ lang, t, nav, projects, onClose }: Props) {
       onClose();
       router.push(href);
     };
+    const section = (id: string) => () => {
+      onClose();
+      onSection(id);
+    };
     const ext = (href: string) => () => {
       onClose();
       window.open(href, "_blank", "noopener,noreferrer");
     };
     const rest = pathname.replace(/^\/(ru|uz|en)(?=\/|$)/, "");
     return [
-      { id: "top", group: t.sections, label: t.home, hint: "~/", icon: I.hash, run: go(`/${lang}#top`) },
-      { id: "demo", group: t.sections, label: t.demo, hint: "#demo", icon: I.hash, run: go(`/${lang}#demo`) },
+      { id: "top", group: t.sections, label: t.home, hint: "~/", icon: I.hash, run: section("top") },
+      { id: "demo", group: t.sections, label: t.demo, hint: "#demo", icon: I.hash, run: section("demo") },
       ...(["works", "method", "play", "contact"] as const).map((id) => ({
         id,
         group: t.sections,
         label: nav[id],
         hint: `#${id}`,
         icon: I.hash,
-        run: go(`/${lang}#${id}`),
+        run: section(id),
       })),
       ...projects.map((p) => ({
         id: `p-${p.slug}`,
@@ -88,6 +98,7 @@ export function CommandPalette({ lang, t, nav, projects, onClose }: Props) {
           onClose();
         },
       },
+      { id: "keys", group: t.actions, label: shortcuts, hint: "?", icon: I.act, run: onShortcuts },
       { id: "gh", group: t.actions, label: t.github, hint: "xzboq", icon: I.act, run: ext(links.github) },
       { id: "tg", group: t.actions, label: t.telegram, hint: "@princess_scammer", icon: I.act, run: ext(links.telegram) },
       { id: "ig", group: t.actions, label: t.instagram, hint: "@princess_scamer", icon: I.act, run: ext(links.instagram) },
@@ -104,7 +115,7 @@ export function CommandPalette({ lang, t, nav, projects, onClose }: Props) {
         },
       })),
     ];
-  }, [lang, t, nav, projects, pathname, router, onClose]);
+  }, [lang, t, nav, projects, pathname, router, onClose, onSection, onShortcuts, shortcuts]);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -121,7 +132,7 @@ export function CommandPalette({ lang, t, nav, projects, onClose }: Props) {
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
-      opener?.focus?.();
+      opener?.focus?.({ preventScroll: true });
     };
   }, []);
 
@@ -207,9 +218,10 @@ export function CommandPalette({ lang, t, nav, projects, onClose }: Props) {
 
 /** Кнопка, открывающая палитру из серверных компонентов. */
 export function PaletteButton({ label, className }: { label: string; className?: string }) {
+  const mod = useModKey();
   return (
     <button type="button" className={className} onClick={openPalette} aria-haspopup="dialog">
-      {label} <kbd>Ctrl K</kbd>
+      {label} <kbd>{mod} K</kbd>
     </button>
   );
 }

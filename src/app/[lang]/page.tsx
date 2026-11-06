@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Channels } from "@/components/Channels";
-import { PaletteButton } from "@/components/CommandPalette";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
 import { LazyGame } from "@/components/LazyGame";
 import { Marquee } from "@/components/Marquee";
 import { Method } from "@/components/Method";
+import { Orb } from "@/components/Orb";
+import { PageTransition } from "@/components/PageTransition";
 import { Scanner } from "@/components/Scanner";
 import { SecHead } from "@/components/SecHead";
-import { Terminal } from "@/components/Terminal";
+import { Starfield } from "@/components/Starfield";
 import { Works } from "@/components/Works";
 import { getDict } from "@/content/dict";
 import { cards } from "@/content/game";
@@ -42,57 +43,60 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   ];
 
   return (
-    <>
+    <PageTransition>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
-      <section id="top" className="wrap hero" aria-labelledby="hero-h">
-        <div className="hero-grid">
-          <div className="hero-copy">
-            <p className="kicker">
-              <span className="pulse" aria-hidden="true" />
-              <b>Utkir</b>
-              <span className="kicker-sep" aria-hidden="true">/</span>
-              <span>{d.hero.role}</span>
-              <span className="kicker-sep" aria-hidden="true">/</span>
-              <span>{d.hero.baseValue}</span>
-            </p>
-            <h1 id="hero-h">
-              <span className="h1-a">{d.hero.headline[0]}</span>{" "}
-              <span className="h1-b">{d.hero.headline[1]}</span>
-              <span className="caret" aria-hidden="true" />
-            </h1>
-            <p className="hero-lead">{d.hero.lead}</p>
-            <div className="hero-cta">
-              <Link href={`/${lang}#works`} className="btn btn--solid">
-                {d.hero.toWorks} <span className="arrow" aria-hidden="true">↓</span>
-              </Link>
-              <PaletteButton label={d.cmd.button} className="btn btn--ghost" />
-            </div>
-            <dl className="stats">
-              {stats.map((s) => (
-                <div key={s.k}>
-                  <dt>{s.k}</dt>
-                  <dd>{s.v}</dd>
-                </div>
-              ))}
-            </dl>
+      <section id="top" className="hero" aria-labelledby="hero-h">
+        <Starfield />
+        <Orb />
+        <div className="wrap hero-copy">
+          <p className="kicker">
+            <span className="kicker-role">{d.hero.role}</span>
+            <span className="status-pill">
+              <i aria-hidden="true" />
+              {d.hero.open}
+            </span>
+          </p>
+          <h1 id="hero-h" className="mega">
+            <span className="mega-l">{d.hero.mega[0]}</span>
+            <span className="mega-l">
+              {d.hero.mega[1]}
+              <span className="mega-dot">.</span>
+            </span>
+          </h1>
+          <p className="hero-lead">
+            <b>
+              {d.hero.headline[0]} {d.hero.headline[1]}
+            </b>{" "}
+            {d.hero.lead}
+          </p>
+          <div className="hero-cta">
+            <Link href={`/${lang}#works`} className="btn btn--solid" data-magnet>
+              {d.hero.toWorks} <span className="arrow" aria-hidden="true">→</span>
+            </Link>
+            <Link href={`/${lang}#contact`} className="btn btn--dark" data-magnet>
+              {d.hero.write}
+            </Link>
           </div>
-
-          <Terminal
-            lang={lang}
-            t={d.term}
-            hero={d.hero}
-            theme={d.theme}
-            verdicts={d.verdicts}
-            severity={d.lab.kiber.severity}
-            projects={projects.map((p) => ({ slug: p.slug, num: p.num, name: p.name, status: d.works.status[p.statusKey] }))}
-            stack={STACK}
-            sample={d.sample[0]}
-          />
         </div>
+        <a href="#demo" className="scroll-hint">
+          {d.hero.scroll}
+          <i aria-hidden="true" />
+        </a>
       </section>
 
       <Marquee items={STACK} />
+
+      <div className="wrap numbers">
+        <dl className="stats">
+          {stats.map((s) => (
+            <div key={s.k}>
+              <dt>{s.k}</dt>
+              <dd>{s.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
 
       <section id="demo" className="sec" aria-labelledby="demo-h">
         <div className="wrap">
@@ -115,7 +119,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <section id="play" className="sec" aria-labelledby="play-h">
         <div className="wrap">
           <SecHead id="play-h" n="03" path="play" title={d.play.title} lead={d.play.lead} />
-          <LazyGame lang={lang} t={d.play} verdicts={d.verdicts} cards={cards[lang]} />
+          <LazyGame lang={lang} t={d.play} verdicts={d.verdicts} cards={cards[lang]} error={{ message: d.ui.demoError, action: d.ui.reload }} />
         </div>
       </section>
 
@@ -130,6 +134,6 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       </section>
 
       <Footer d={d} lang={lang} />
-    </>
+    </PageTransition>
   );
 }

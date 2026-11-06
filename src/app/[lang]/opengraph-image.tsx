@@ -21,22 +21,22 @@ export default function OG() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#0a0b0d",
+          background: "#07070c",
           backgroundImage:
-            "radial-gradient(700px 400px at 90% 0%, rgba(182,156,255,0.18), transparent 70%), radial-gradient(600px 400px at 0% 0%, rgba(182,240,74,0.12), transparent 70%)",
+            "radial-gradient(700px 400px at 90% 0%, rgba(182,156,255,0.18), transparent 70%), radial-gradient(600px 400px at 0% 0%, rgba(103,212,255,0.12), transparent 70%)",
           color: "#eceef1",
           padding: 72,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 28, color: "#959daa" }}>
           <div style={{ display: "flex", width: 14, height: 14, borderRadius: 7, background: "#4ade80" }} />
-          <span style={{ color: "#b6f04a" }}>~/utkir</span>
+          <span style={{ color: "#a99cff", letterSpacing: 6 }}>UTKIR</span>
           <span>Full-Stack Developer · Chirchiq, Uzbekistan</span>
         </div>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "flex-end", fontSize: 210, fontWeight: 800, letterSpacing: -12, lineHeight: 0.9 }}>
             utkir
-            <div style={{ display: "flex", width: 26, height: 150, marginLeft: 14, marginBottom: 12, background: "#b6f04a", borderRadius: 4 }} />
+            <div style={{ display: "flex", width: 26, height: 150, marginLeft: 14, marginBottom: 12, background: "#a99cff", borderRadius: 4 }} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", fontSize: 26, gap: 6, color: "#959daa" }}>
             <span>Kiber Yordamchi</span>

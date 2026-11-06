@@ -4,7 +4,7 @@ export function Marquee({ items }: { items: string[] }) {
     <ul className="mq-row" aria-hidden={hidden || undefined}>
       {items.map((s) => (
         <li key={s}>
-          <span className="mq-dot" aria-hidden="true">◆</span>
+          <span className="mq-dot" aria-hidden="true">✦</span>
           {s}
         </li>
       ))}

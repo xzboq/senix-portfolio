@@ -47,7 +47,6 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
   const field = (id: "name" | "reach" | "message", label: string, hint?: string) => (
     <div className="field">
       <label htmlFor={`f-${id}`} className="label">
-        <span className="flag" aria-hidden="true">--{id}</span>
         {label}
         {hint ? <span className="hint"> · {hint}</span> : null}
       </label>
@@ -62,10 +61,6 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
 
   return (
     <form className="form panel" onSubmit={onSubmit} noValidate>
-      <div className="panel-bar">
-        <span>contact.sh</span>
-        <span className="live">FormSubmit · SSL</span>
-      </div>
       <div className="form-body">
       {field("name", t.name)}
       {field("reach", t.reach, t.reachHint)}

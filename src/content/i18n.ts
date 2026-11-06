@@ -16,11 +16,12 @@ export const localeNames: L<string> = {
 export const ogLocale: L<string> = { ru: "ru_RU", uz: "uz_UZ", en: "en_US" };
 
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://senix-portfolio.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://xzboq.github.io/senix-portfolio"
 ).replace(/\/$/, "");
 
 export const links = {
   github: "https://github.com/xzboq",
+  repo: "https://github.com/xzboq/senix-portfolio",
   telegram: "https://t.me/princess_scammer",
   instagram: "https://instagram.com/princess_scamer",
   // FormSubmit: без БД и собственного бэкенда. Адрес можно заменить на алиас из письма FormSubmit,

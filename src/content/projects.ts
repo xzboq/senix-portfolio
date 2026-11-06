@@ -655,6 +655,7 @@ export const projects: Project[] = [
 
 export const bySlug = (s: string) => projects.find((p) => p.slug === s);
 export const nextOf = (s: Slug) => projects[(projects.findIndex((p) => p.slug === s) + 1) % projects.length];
+export const prevOf = (s: Slug) => projects[(projects.findIndex((p) => p.slug === s) - 1 + projects.length) % projects.length];
 export const txt = (p: Project, l: Locale) => p.text[l];
 
 /** Небольшие проекты и эксперименты: без отдельной страницы. */

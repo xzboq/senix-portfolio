@@ -1,13 +1,48 @@
 # Utkir — portfolio
 
-Next.js 16 · React 19 · TypeScript · plain CSS. Три языка (`/ru`, `/uz`, `/en`), Vercel-ready, без БД и своего бэкенда.
+Next.js 16 · React 19 · TypeScript · plain CSS, без UI-кита. Три языка (`/ru`, `/uz`, `/en`), статический экспорт на GitHub Pages, без БД и своего бэкенда.
 
-- Тексты: `src/content/dict.ts` (UI), `src/content/projects.ts` (проекты), `src/content/game.ts` (игра).
-- `src/lib/engine.ts` — порт Risk Engine из Kiber Yordamchi; работает в браузере.
-- Форма: FormSubmit (`links.form` в `src/content/i18n.ts`, переопределяется `NEXT_PUBLIC_FORM_ENDPOINT`). При первой отправке на почту придёт письмо с подтверждением адреса.
-- `NEXT_PUBLIC_SITE_URL` — адрес сайта для canonical/OG/sitemap.
+**Сайт:** https://xzboq.github.io/senix-portfolio/
+
+## Что внутри
+
+- **Космический первый экран** — гигантский металлический заголовок, глянцевый шар с орбитой и спутником (CSS/SVG, без WebGL), звёздное небо на canvas: рядом с курсором звёзды соединяются в созвездия, иногда пролетает метеор.
+- **Заставка «гиперпрыжок»** при первом заходе за сессию — рисуется встроенным скриптом до загрузки React; при «уменьшить движение» её нет.
+- **Живые превью проектов** — машинка дрифтует по восьмёрке, стаканы наполняются, сканер проверяет сообщение, ники проверяются вживую.
+- **Палитра команд** — `Ctrl K` / `⌘K` или `/`: разделы, проекты, тема, язык, ссылки.
+- **Горячие клавиши** — `?` показывает список; `T` меняет тему; `G`, затем `H` / `D` / `W` / `M` / `P` / `C` — переход к разделу.
+- **6 проектов** со своими страницами: паспорт, оглавление, схема, живое демо на настоящей логике проекта. Карточка «перелетает» в шапку страницы (React `ViewTransition`).
+- Тёмная тема по умолчанию, светлая по кнопке — без вспышки при загрузке.
+
+## Где что лежит
+
+| Путь | Что |
+| --- | --- |
+| `src/content/dict.ts` | все тексты интерфейса на трёх языках |
+| `src/content/projects.ts` | проекты и «Ещё проекты» |
+| `src/content/drift.ts` | машины и дрифт-зоны из игры «Дрифт Чирчик» |
+| `src/components/Starfield.tsx`, `Orb.tsx`, `Boot.tsx` | звёздное небо, шар с орбитой, заставка |
+| `src/content/game.ts` | карточки игры «Verify» |
+| `src/lib/engine.ts` | порт Risk Engine из Kiber Yordamchi, работает в браузере |
+| `src/components/` | интерфейс; `labs/` — демо на страницах проектов |
+| `scripts/postbuild.mjs` | после сборки: OG-картинки в `.png`, адреса для превью корня |
+| `scripts/check-site.mjs` | проверка `out/`: битые ссылки и якоря, `<title>`, описания, мусор вроде `undefined` |
+
+## Команды
 
 ```bash
-npm i && npm run dev
-npm run build
+npm i && npm run dev     # разработка
+npm run build            # сборка в out/ (postbuild запускается сам)
+npm run check            # проверка собранного сайта
+npm run verify           # lint + build + check — то же, что делает CI
 ```
+
+## Деплой
+
+Пуш в `main` → GitHub Actions (`.github/workflows/deploy.yml`): lint → build → check-site → GitHub Pages. Если проверка находит битую ссылку, деплой не происходит.
+
+## Переменные окружения
+
+- `NEXT_PUBLIC_SITE_URL` — адрес сайта для canonical, OG и sitemap (CI задаёт сам).
+- `NEXT_PUBLIC_BASE_PATH` — подпапка на GitHub Pages, например `/senix-portfolio` (CI задаёт сам).
+- `NEXT_PUBLIC_FORM_ENDPOINT` — адрес формы FormSubmit вместо `links.form` из `src/content/i18n.ts`.

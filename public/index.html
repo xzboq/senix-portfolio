@@ -4,6 +4,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Utkir — Full-Stack Developer</title>
+    <meta name="description" content="Utkir, 13, full-stack developer from Chirchiq, Uzbekistan: an anti-fraud Telegram bot, a 3D drift game, Telegram mini apps and more — with live demos in the browser." />
+    <meta name="theme-color" content="#07070c" />
+    <!-- %SITE_URL% подставляет scripts/postbuild.mjs -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Utkir" />
+    <meta property="og:title" content="Utkir — Full-Stack Developer" />
+    <meta property="og:description" content="An anti-fraud Telegram bot, a 3D drift game, Telegram mini apps and more — with live demos in the browser." />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/en/opengraph-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="alternate" hreflang="ru" href="%SITE_URL%/ru/" />
+    <link rel="alternate" hreflang="uz" href="%SITE_URL%/uz/" />
+    <link rel="alternate" hreflang="en" href="%SITE_URL%/en/" />
+    <style>
+      html { background: #07070c; color: #f2f2f7; color-scheme: dark; font: 15px/1.6 ui-monospace, Consolas, monospace; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; }
+      a { color: #b4a9ff; }
+      ul { list-style: none; padding: 0; display: flex; gap: 16px; }
+    </style>
     <!-- Статический хостинг не умеет middleware: язык выбираем здесь, в браузере. -->
     <script>
       (function () {
@@ -25,7 +47,7 @@
   </head>
   <body>
     <noscript>
-      <p>Choose a language:</p>
+      <p>~/utkir — choose a language:</p>
       <ul>
         <li><a href="./ru/">Русский</a></li>
         <li><a href="./uz/">Oʻzbekcha</a></li>

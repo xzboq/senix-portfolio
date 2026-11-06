@@ -7,6 +7,11 @@ const EVENT = "utkir:theme";
 /** Выполняется синхронно в <head>, поэтому без вспышки неправильной темы. */
 export const themeScript = `(function(){try{var t=localStorage.getItem("${THEME_KEY}");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`;
 
+/** Экран загрузки «UTKIR/OS»: один раз за сессию, до первой отрисовки. data-boot включает его (и задержку
+ *  анимаций первого экрана), через 4 с атрибут меняется на data-booted — повторные монтирования его не показывают.
+ *  Без JS, в приватном режиме и при «уменьшить движение» экрана загрузки нет. */
+export const bootScript = `(function(){var d=document.documentElement;try{if(sessionStorage.getItem("utkir.boot")||matchMedia("(prefers-reduced-motion: reduce)").matches){d.setAttribute("data-booted","");return}sessionStorage.setItem("utkir.boot","1");d.setAttribute("data-boot","");setTimeout(function(){d.removeAttribute("data-boot");d.setAttribute("data-booted","")},4000)}catch(e){d.setAttribute("data-booted","")}})()`;
+
 export function getTheme(): Theme {
   return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
 }

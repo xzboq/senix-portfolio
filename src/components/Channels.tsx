@@ -9,14 +9,16 @@ export function Channels({ t, external }: { t: Dict["contact"]; external: string
   ];
 
   return (
-    <div className="channels" role="list" aria-label={t.channels}>
+    <ul className="channels" aria-label={t.channels}>
       {rows.map((r) => (
-        <a key={r.k} className="ch" role="listitem" href={r.href} target="_blank" rel="noopener noreferrer">
-          <span className="label">{r.k}</span>
-          <b>{r.v}<span className="sr"> ({external})</span></b>
-          <span className="arrow" aria-hidden="true">↗</span>
-        </a>
+        <li key={r.k}>
+          <a className="ch" href={r.href} target="_blank" rel="noopener noreferrer">
+            <span className="label">{r.k}</span>
+            <b>{r.v}<span className="sr"> ({external})</span></b>
+            <span className="arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
