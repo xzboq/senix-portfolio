@@ -1796,3 +1796,88 @@ a.ch:hover .arrow { transform: translate(3px, -3px); color: var(--accent-ink); }
   .np-screen { width: 200px; height: 200px; overflow: hidden; border-radius: 12px; background: #000; }
   .np-screen iframe { display: block; width: 200px; height: 200px; border: 0; }
 }
+
+/* ───────── оригинальные штуки (ПК): полёт по странице, чёрная дыра, сигнал из формы, фаза Луны ───────── */
+.flight { display: none; }
+@media (min-width: 1024px) {
+  /* полёт: рельс слева, остановки — разделы, ракета едет вместе с прокруткой */
+  .flight {
+    --p: 0; --v: 0;
+    display: block; position: fixed; z-index: 45; left: clamp(8px, calc(50vw - 690px), 56px); top: 20vh; width: 28px; height: 60vh;
+    animation: fade 0.8s ease-out both; animation-delay: calc(var(--boot, 0s) + 1.2s);
+  }
+  .flight ol { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+  .flight-track {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; translate: -50% 0;
+    background: linear-gradient(transparent, color-mix(in srgb, var(--fg) 18%, transparent) 6%, color-mix(in srgb, var(--fg) 18%, transparent) 94%, transparent);
+  }
+  .flight-track::after {
+    content: ""; position: absolute; inset: 0; transform-origin: 50% 0; scale: 1 var(--p);
+    background: linear-gradient(var(--accent), var(--cyan));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  .flight li { position: absolute; left: 50%; top: calc(var(--i) * 100%); translate: -50% -50%; }
+  .flight-stop { position: relative; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; }
+  .flight-stop::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--fg) 40%, transparent); background: var(--bg);
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, scale 0.2s;
+  }
+  .flight li:last-child .flight-stop::before { width: 10px; height: 10px; }
+  .flight li[data-on] .flight-stop::before {
+    background: var(--accent-ink); border-color: var(--accent-ink);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 80%, transparent);
+  }
+  .flight-stop:hover::before, .flight-stop:focus-visible::before { scale: 1.5; }
+  .flight-tip {
+    position: absolute; left: calc(100% + 6px); top: 50%; translate: -4px -50%; padding: 6px 10px; border-radius: 999px; white-space: nowrap;
+    font: 500 0.6875rem/1 var(--font-mono); letter-spacing: 0.08em; color: var(--fg);
+    border: 1px solid var(--line2); background: color-mix(in srgb, var(--panel) 88%, transparent);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s, translate 0.2s;
+  }
+  .flight-stop:hover .flight-tip, .flight-stop:focus-visible .flight-tip { opacity: 1; translate: 0 -50%; }
+  .flight-ship {
+    position: absolute; left: 50%; top: calc(var(--p) * 100%); width: 14px; height: 26px; translate: -50% -50%; pointer-events: none;
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 80%, transparent));
+  }
+  .flight-ship svg { width: 100%; height: 100%; overflow: visible; }
+  .flight-body { fill: color-mix(in srgb, var(--fg) 94%, transparent); }
+  .flight-fins { fill: var(--accent); }
+  .flight-window { fill: var(--cyan); }
+  .flight-flame { fill: url(#flight-flame); transform-box: fill-box; transform-origin: 50% 100%; scale: 1 calc(0.5 + var(--v) * 1.1); transition: scale 0.25s; }
+  .flight-read {
+    position: absolute; left: calc(50% + 12px); top: calc(var(--p) * 100%); translate: 0 18px;
+    writing-mode: vertical-rl; white-space: nowrap; pointer-events: none;
+    font: 600 0.625rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute);
+    text-shadow: 0 0 10px var(--bg), 0 0 3px var(--bg);
+  }
+  .flight[data-flip] .flight-read { translate: 0 calc(-100% - 18px); }
+  @media (prefers-reduced-motion: no-preference) {
+    .flight[data-moving] .flight-flame { animation: flame 0.12s steps(2) infinite; }
+  }
+
+  /* чёрная дыра: пока держат — текст не выделяется, кольцо курсора сжимается, будто его затягивает */
+  html.holding, html.holding * { -webkit-user-select: none !important; user-select: none !important; }
+  html.holding .cursor::before { scale: 0.4; border-color: rgba(255, 236, 200, 0.85); background: transparent; }
+
+  /* фаза Луны в первом экране */
+  .clock-pill .moon { flex: none; width: 12px; height: 12px; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--violet) 70%, transparent)); }
+  .clock-pill .moon circle { fill: color-mix(in srgb, var(--fg) 14%, transparent); }
+  .clock-pill .moon path { fill: #f1edff; }
+  :root[data-theme="light"] .clock-pill .moon path { fill: var(--accent-strong); }
+}
+@keyframes flame { 50% { opacity: 0.6; } }
+
+/* сигнал из формы связи: радиоволны от кнопки и импульс к краю экрана (создаётся из lib/signal.ts) */
+.signal { position: fixed; z-index: 90; width: 0; height: 0; pointer-events: none; }
+.signal i { position: absolute; left: 0; top: 0; width: 60px; height: 60px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--accent-ink) 80%, transparent); }
+.signal b {
+  position: absolute; left: 0; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 14px 5px color-mix(in srgb, var(--accent) 80%, transparent), 0 0 40px 10px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.signal b::after {
+  content: ""; position: absolute; right: 50%; top: 50%; width: 140px; height: 2px; translate: 0 -50%;
+  transform-origin: 100% 50%; rotate: var(--a);
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.9), transparent);
+}

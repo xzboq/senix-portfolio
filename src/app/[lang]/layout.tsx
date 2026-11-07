@@ -9,6 +9,7 @@ import { bootScript, themeScript } from "@/lib/theme";
 import { Boot } from "@/components/Boot";
 import { Cursor } from "@/components/Cursor";
 import { Extras } from "@/components/Extras";
+import { Flight } from "@/components/Flight";
 import { Nebula } from "@/components/Nebula";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Stardust } from "@/components/Stardust";
@@ -121,6 +122,7 @@ export default async function RootLayout({
         <Stardust />
         <SmoothScroll />
         <Extras t={d.fun} />
+        <Flight lang={lang} t={d.flight} />
         <div className="page">
           <main id="main">{children}</main>
         </div>

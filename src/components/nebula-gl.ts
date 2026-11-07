@@ -2,9 +2,12 @@
  *  Узор — fbm-шум с двойным искажением пространства, считается в шейдере на холсте в ~⅓ разрешения
  *  экрана (туманность мягкая, CSS растягивает её без потерь). Медленнее страницы плывёт при прокрутке
  *  и чуть уходит от курсора; у каждого раздела своя палитра, между разделами цвета перетекают.
- *  Клик по шару, пойманная комета и гиперпрыжок на миг зажигают её ярче.
+ *  Клик по шару, пойманная комета и гиперпрыжок на миг зажигают её ярче; вокруг чёрной дыры
+ *  (lib/hole.ts) она гнётся гравитационной линзой, а за горизонтом событий гаснет.
  *  Кадры — только по делу: прокрутка, мышь, вспышка, смена темы или размера. В покое не рисует ничего.
  *  Подключается динамически из Nebula.tsx — на телефоны этот код не загружается. */
+
+import { HOLE_COLLAPSE, HOLE_START, hole } from "@/lib/hole";
 
 type RGB = readonly [number, number, number];
 type Palette = readonly [RGB, RGB, RGB]; // основной газ, второй газ, горячие волокна
@@ -48,6 +51,8 @@ uniform vec3 uC;
 uniform float uGain;
 uniform float uLight; // 1 — светлая тема: пастель поверх белого вместо свечения
 uniform float uFlash; // 0…1 — короткая вспышка: клик по шару, пойманная комета, гиперпрыжок
+uniform vec3 uHole;   // чёрная дыра: центр (в тех же единицах, что uv) и сила 0…1
+uniform float uHoleR; // радиус горизонта в единицах uv
 
 float hash(vec2 p) {
   vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -89,7 +94,11 @@ float ridged(vec2 p) {
 
 void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
-  vec2 p = uv * 1.25 + uOff;
+  // гравитационная линза: свет из-за дыры отклоняется — узор вокруг неё растягивается в кольцо
+  vec2 hd = uv - uHole.xy;
+  float hr = max(length(hd), 1e-4);
+  float te = uHoleR * 1.7; // радиус кольца Эйнштейна
+  vec2 p = (uv - hd * (te * te * uHole.z) / (hr * hr)) * 1.25 + uOff;
 
   // двойное искажение пространства — отсюда завихрения и рваные края облаков
   vec2 q = vec2(fbm(p), fbm(p + vec2(5.2, 1.3)));
@@ -123,7 +132,11 @@ void main() {
     return;
   }
   // свечение складывается с фоном, пыль — поглощает (гасит звёзды за собой)
-  gl_FragColor = vec4(e * uGain * (1.0 + uFlash * 1.1), clamp(dust * 0.5 + gas * 0.2, 0.0, 0.8) * calm);
+  // за горизонтом событий — чернота (гасит и звёзды за туманностью), по кольцу Эйнштейна — свечение
+  float hz = (1.0 - smoothstep(uHoleR * 0.8, uHoleR * 1.05 + 1e-4, hr)) * uHole.z; // края не совпадают даже при R = 0
+  float ring = exp(-pow((hr - te) / (0.2 * te + 1e-4), 2.0)) * uHole.z;
+  e = e * uGain * (1.0 + uFlash * 1.1) * (1.0 - hz) + vec3(0.8, 0.72, 1.0) * ring * 0.35;
+  gl_FragColor = vec4(e, max(clamp(dust * 0.5 + gas * 0.2, 0.0, 0.8) * calm, hz));
 }`;
 
 function compile(gl: WebGLRenderingContext, type: number, src: string) {
@@ -175,7 +188,7 @@ export function startNebula(canvas: HTMLCanvasElement): (() => void) | null {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   const aPos = gl.getAttribLocation(prog, "aPos");
   const u = (n: string) => gl.getUniformLocation(prog, n);
-  const U = { res: u("uRes"), off: u("uOff"), a: u("uA"), b: u("uB"), c: u("uC"), gain: u("uGain"), light: u("uLight"), flash: u("uFlash") };
+  const U = { res: u("uRes"), off: u("uOff"), a: u("uA"), b: u("uB"), c: u("uC"), gain: u("uGain"), light: u("uLight"), flash: u("uFlash"), hole: u("uHole"), holeR: u("uHoleR") };
   gl.useProgram(prog);
   gl.enableVertexAttribArray(aPos);
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
@@ -194,6 +207,7 @@ export function startNebula(canvas: HTMLCanvasElement): (() => void) | null {
   let px = 0;
   let py = 0;
   let flashAt = -1e9;
+  let holeLive = false;
   let flashLen = 1;
 
   const paletteOf = (el: Element, i: number): Palette =>
@@ -264,6 +278,11 @@ export function startNebula(canvas: HTMLCanvasElement): (() => void) | null {
     if (Math.abs(mx - px) + Math.abs(my - py) > 0.0005) busy = true;
     const fl = Math.max(0, 1 - (now - flashAt) / (flashLen * 1000));
     if (fl > 0) busy = true;
+    // чёрная дыра живёт в Warp.tsx — пока она есть, перерисовываемся каждый кадр
+    if (holeLive) {
+      busy = true;
+      if (!hole.held && hole.s <= 0.001) holeLive = false;
+    }
 
     const sy = window.scrollY / Math.max(window.innerHeight, 1);
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -275,6 +294,10 @@ export function startNebula(canvas: HTMLCanvasElement): (() => void) | null {
     gl.uniform1f(U.gain, cur[9]);
     gl.uniform1f(U.light, light() ? 1 : 0);
     gl.uniform1f(U.flash, fl * fl);
+    const cw = canvas.clientWidth || 1;
+    const ch = canvas.clientHeight || 1;
+    gl.uniform3f(U.hole, (hole.x / cw - 0.5) * (cw / ch), 0.5 - hole.y / ch, light() ? 0 : hole.s);
+    gl.uniform1f(U.holeR, hole.r / ch);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     if (first) {
@@ -305,6 +328,11 @@ export function startNebula(canvas: HTMLCanvasElement): (() => void) | null {
   };
   const onOrb = flash(1.1);
   const onJump = flash(1.8);
+  const onHole = () => {
+    holeLive = true;
+    request();
+  };
+  const onCollapse = flash(1.0);
   const onLost = (e: Event) => {
     e.preventDefault();
     stop();
@@ -315,6 +343,8 @@ export function startNebula(canvas: HTMLCanvasElement): (() => void) | null {
   window.addEventListener("utkir:orb", onOrb);
   window.addEventListener("utkir:comet", onOrb);
   window.addEventListener("utkir:jump", onJump);
+  window.addEventListener(HOLE_START, onHole);
+  window.addEventListener(HOLE_COLLAPSE, onCollapse);
   if (fine && !calm) window.addEventListener("pointermove", onMove, { passive: true });
   canvas.addEventListener("webglcontextlost", onLost);
   // страница могла смениться без прокрутки (переход по ссылке) — разделы и цвета другие
@@ -333,6 +363,8 @@ export function startNebula(canvas: HTMLCanvasElement): (() => void) | null {
     window.removeEventListener("utkir:orb", onOrb);
     window.removeEventListener("utkir:comet", onOrb);
     window.removeEventListener("utkir:jump", onJump);
+    window.removeEventListener(HOLE_START, onHole);
+    window.removeEventListener(HOLE_COLLAPSE, onCollapse);
     window.removeEventListener("pointermove", onMove);
     canvas.removeEventListener("webglcontextlost", onLost);
     ro.disconnect();

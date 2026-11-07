@@ -3,7 +3,7 @@
  *  не заиграет сама при следующем визите. Если песня не загрузилась, вместо неё звучит синтезированный
  *  космический эмбиент. AudioContext создаётся только после жеста пользователя (политика автоплея). */
 
-export type Sfx = "hover" | "click" | "whoosh" | "comet" | "jump";
+export type Sfx = "hover" | "click" | "whoosh" | "comet" | "jump" | "hole" | "collapse";
 
 const EVENT = "utkir:sound";
 export const SOUND_TOGGLE = "utkir:sound-toggle";
@@ -235,6 +235,16 @@ export function sfx(kind: Sfx) {
     case "comet":
       [1567.98, 1975.53, 2349.32, 2637.02, 3135.96].forEach((f, i) => tone(f, 0.6, 0.032, "sine", i * 0.055, true));
       tone(392, 0.5, 0.05, "triangle", 0, true, 784);
+      break;
+    case "hole":
+      // низкий гул, уходящий вниз, и шум, который засасывает
+      tone(70, 1.6, 0.13, "sine", 0, true, 34);
+      sweep(1400, 160, 1.3, 0.07);
+      break;
+    case "collapse":
+      // удар и вспышка
+      tone(110, 0.7, 0.22, "sine", 0, true, 30);
+      sweep(220, 6400, 0.55, 0.13);
       break;
     case "jump":
       sweep(160, 6000, 1.3, 0.16);

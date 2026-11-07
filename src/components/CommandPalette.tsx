@@ -5,6 +5,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "rea
 import type { Dict } from "@/content/dict";
 import { links, localeNames, locales, type Locale } from "@/content/i18n";
 import { useModKey } from "@/lib/platform";
+import { HOLE_DEMO } from "@/lib/hole";
 import { SOUND_TOGGLE } from "@/lib/sound";
 import { setLocaleCookie, toggleTheme } from "@/lib/theme";
 
@@ -74,11 +75,12 @@ export function CommandPalette({ lang, t, nav, projects, shortcuts, onShortcuts,
       onClose();
       window.dispatchEvent(new Event(name));
     };
-    // звук и гиперпрыжок есть только на ПК (палитра открывается лишь в браузере — window есть)
+    // звук, чёрная дыра и гиперпрыжок есть только на ПК (палитра открывается лишь в браузере — window есть)
     const pc = window.matchMedia("(min-width: 1024px)").matches;
     const fun: Item[] = pc
       ? [
           { id: "sound", group: t.actions, label: t.sound, hint: "♪", icon: I.act, run: emit(SOUND_TOGGLE) },
+          { id: "hole", group: t.actions, label: t.hole, hint: "●", icon: I.act, run: emit(HOLE_DEMO) },
           {
             id: "jump",
             group: t.actions,

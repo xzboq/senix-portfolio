@@ -3,10 +3,12 @@
 import { useState, type FormEvent } from "react";
 import type { Dict } from "@/content/dict";
 import { links } from "@/content/i18n";
+import { launchSignal } from "@/lib/signal";
 
 /** Связь без бэкенда и без секретов в бандле: форма собирает текст и открывает чат со мной
  *  в Telegram — t.me/<username>?text=… подставляет его в поле ввода, остаётся нажать «Отправить».
- *  Текст ещё и копируется в буфер: на случай клиента, который не подставит его сам. */
+ *  Текст ещё и копируется в буфер: на случай клиента, который не подставит его сам.
+ *  На ПК перед открытием чата от кнопки уходит «сигнал» (lib/signal.ts) — Telegram открывается через ~0,6 с. */
 type Opened = { url: string; copied: boolean } | null;
 
 export function ContactForm({ t }: { t: Dict["contact"] }) {
@@ -39,7 +41,11 @@ export function ContactForm({ t }: { t: Dict["contact"] }) {
       ?.writeText(text)
       .then(() => setOpened((o) => (o ? { ...o, copied: true } : o)))
       .catch(() => {});
-    window.open(url, "_blank", "noopener,noreferrer");
+    const btn = form.querySelector<HTMLElement>("button[type='submit']");
+    const wait = btn ? launchSignal(btn) : 0;
+    const open = () => window.open(url, "_blank", "noopener,noreferrer");
+    if (wait) window.setTimeout(open, wait);
+    else open();
   }
 
   const field = (id: "name" | "message", label: string) => (

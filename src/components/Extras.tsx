@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { fmt, type Dict } from "@/content/dict";
+import { HOLE_COLLAPSE, HOLE_START } from "@/lib/hole";
 import { hyperjump } from "@/lib/hyperjump";
 import { SOUND_TOGGLE, initSound, setSound, sfx, soundEnabled, subscribeSound } from "@/lib/sound";
 import { Music } from "./Music";
@@ -61,6 +62,8 @@ function ExtrasPC({ t }: { t: Dict["fun"] }) {
   // клик по шару — «вжух»; пойманная комета — звон и уведомление со счётчиком
   useEffect(() => {
     const onOrb = () => sfx("whoosh");
+    const onHole = () => sfx("hole");
+    const onCollapse = () => sfx("collapse");
     const onComet = () => {
       sfx("comet");
       const key = ++seq.current;
@@ -70,10 +73,14 @@ function ExtrasPC({ t }: { t: Dict["fun"] }) {
     };
     window.addEventListener(ORB_EVENT, onOrb);
     window.addEventListener(COMET_EVENT, onComet);
+    window.addEventListener(HOLE_START, onHole);
+    window.addEventListener(HOLE_COLLAPSE, onCollapse);
     window.addEventListener(SOUND_TOGGLE, toggleSound);
     return () => {
       window.removeEventListener(ORB_EVENT, onOrb);
       window.removeEventListener(COMET_EVENT, onComet);
+      window.removeEventListener(HOLE_START, onHole);
+      window.removeEventListener(HOLE_COLLAPSE, onCollapse);
       window.removeEventListener(SOUND_TOGGLE, toggleSound);
     };
   }, [toggleSound]);

@@ -40,6 +40,7 @@ const en = {
     hint: "↑↓ move · ↵ open · esc close",
     sound: "Toggle music",
     jump: "Hyperspace jump",
+    hole: "Black hole",
   },
   theme: { toggle: "Toggle theme", dark: "dark", light: "light" },
   demo: {
@@ -385,6 +386,17 @@ const en = {
     city: "Chirchiq",
     day: "online",
     night: "night here — I'll reply in the morning",
+    moon: "Moon over Chirchiq: {n}% lit",
+  },
+  flight: {
+    label: "Flight through the page",
+    stops: ["Chirchiq, Earth", "ISS orbit", "The Moon", "Mars", "Asteroid belt", "Jupiter", "Proxima b"],
+    km: "km",
+    mkm: "M km",
+    bkm: "B km",
+    tkm: "T km",
+    ly: "light-years",
+    arrived: "arrived",
   },
 };
 
@@ -429,6 +441,7 @@ const ru: Dict = {
     hint: "↑↓ выбор · ↵ открыть · esc закрыть",
     sound: "Музыка: вкл / выкл",
     jump: "Гиперпрыжок",
+    hole: "Чёрная дыра",
   },
   theme: { toggle: "Сменить тему", dark: "тёмная", light: "светлая" },
   demo: {
@@ -766,6 +779,17 @@ const ru: Dict = {
     city: "Чирчик",
     day: "на связи",
     night: "ночь — отвечу утром",
+    moon: "Луна над Чирчиком: освещена на {n}%",
+  },
+  flight: {
+    label: "Полёт по странице",
+    stops: ["Чирчик, Земля", "Орбита МКС", "Луна", "Марс", "Пояс астероидов", "Юпитер", "Проксима b"],
+    km: "км",
+    mkm: "млн км",
+    bkm: "млрд км",
+    tkm: "трлн км",
+    ly: "св. года",
+    arrived: "прибытие",
   },
 };
 
@@ -808,6 +832,7 @@ const uz: Dict = {
     hint: "↑↓ tanlash · ↵ ochish · esc yopish",
     sound: "Musiqa: yoqish / oʻchirish",
     jump: "Giper sakrash",
+    hole: "Qora tuynuk",
   },
   theme: { toggle: "Mavzuni almashtirish", dark: "qorongʻi", light: "yorugʻ" },
   demo: {
@@ -1145,6 +1170,17 @@ const uz: Dict = {
     city: "Chirchiq",
     day: "aloqadaman",
     night: "hozir tun — ertalab javob beraman",
+    moon: "Chirchiq osmonida Oy: {n}% yoritilgan",
+  },
+  flight: {
+    label: "Sahifa boʻylab parvoz",
+    stops: ["Chirchiq, Yer", "XKS orbitasi", "Oy", "Mars", "Asteroidlar kamari", "Yupiter", "Proksima b"],
+    km: "km",
+    mkm: "mln km",
+    bkm: "mlrd km",
+    tkm: "trln km",
+    ly: "yorugʻlik yili",
+    arrived: "yetib keldik",
   },
 };
 
