@@ -1,14 +1,15 @@
-/** Звук сайта (ПК, по желанию): космический эмбиент и короткие звуки интерфейса — всё синтезируется
- *  Web Audio на лету, без файлов. По умолчанию выключен; выбор хранится в localStorage.
- *  AudioContext создаётся только после жеста пользователя (политика автоплея браузеров). */
+/** Звук сайта (ПК, по желанию): песня на кнопке звука (официальный плеер YouTube — Music.tsx) и короткие
+ *  звуки интерфейса, синтезированные Web Audio на лету. По умолчанию выключен и не запоминается — песня
+ *  не заиграет сама при следующем визите. Если песня не загрузилась, вместо неё звучит синтезированный
+ *  космический эмбиент. AudioContext создаётся только после жеста пользователя (политика автоплея). */
 
 export type Sfx = "hover" | "click" | "whoosh" | "comet" | "jump";
 
-const KEY = "utkir.sound";
 const EVENT = "utkir:sound";
 export const SOUND_TOGGLE = "utkir:sound-toggle";
 
 let on = false;
+let fallback = false; // песня недоступна — кнопка включает эмбиент
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 let verb: ConvolverNode | null = null;
@@ -16,13 +17,7 @@ let noise: AudioBuffer | null = null;
 let ambient: { stop: () => void } | null = null;
 let armed = false;
 
-export function soundEnabled(): boolean {
-  try {
-    return localStorage.getItem(KEY) === "1";
-  } catch {
-    return false;
-  }
-}
+export const soundEnabled = (): boolean => on;
 
 export function subscribeSound(cb: () => void) {
   window.addEventListener(EVENT, cb);
@@ -100,7 +95,8 @@ function sweep(from: number, to: number, dur: number, vol: number) {
   src.stop(t + dur + 0.05);
 }
 
-/** Эмбиент: тёплый гул (пила через фильтр, который медленно «дышит») и редкие звёздные искры. */
+/** Эмбиент (запасной, если песня не загрузилась): тёплый гул — пила через медленно «дышащий» фильтр —
+ *  и редкие звёздные искры. */
 function startAmbient(ac: AudioContext): { stop: () => void } {
   const out = ac.createGain();
   out.gain.setValueAtTime(0, ac.currentTime);
@@ -183,7 +179,7 @@ function apply() {
       .resume()
       .then(() => {
         if (!on || !master) return;
-        if (!ambient) ambient = startAmbient(ac);
+        if (fallback && !ambient) ambient = startAmbient(ac);
         master.gain.cancelScheduledValues(ac.currentTime);
         master.gain.setTargetAtTime(0.9, ac.currentTime, 0.3);
       })
@@ -201,28 +197,20 @@ function apply() {
 
 export function setSound(next: boolean) {
   on = next;
-  try {
-    localStorage.setItem(KEY, next ? "1" : "0");
-  } catch {}
   apply();
   window.dispatchEvent(new Event(EVENT));
 }
 
-/** Звук был включён в прошлый раз: ждём первый клик или клавишу (раньше браузер не даст играть).
- *  На скрытой вкладке контекст засыпает. */
+/** Песня недоступна (YouTube заблокирован, нет сети): кнопка звука включает космический эмбиент. */
+export function setAmbientFallback(next: boolean) {
+  fallback = next;
+  apply();
+}
+
+/** На скрытой вкладке звуки интерфейса засыпают. */
 export function initSound() {
   if (armed) return;
   armed = true;
-  on = soundEnabled();
-  const wake = () => {
-    window.removeEventListener("pointerdown", wake);
-    window.removeEventListener("keydown", wake);
-    if (on) apply();
-  };
-  if (on) {
-    window.addEventListener("pointerdown", wake);
-    window.addEventListener("keydown", wake);
-  }
   document.addEventListener("visibilitychange", () => {
     if (!ctx || !on) return;
     if (document.hidden) void ctx.suspend().catch(() => {});

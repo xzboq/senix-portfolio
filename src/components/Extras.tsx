@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { fmt, type Dict } from "@/content/dict";
 import { hyperjump } from "@/lib/hyperjump";
 import { SOUND_TOGGLE, initSound, setSound, sfx, soundEnabled, subscribeSound } from "@/lib/sound";
+import { Music } from "./Music";
 
 const PC = "(min-width: 1024px)";
 const subPc = (cb: () => void) => {
@@ -39,8 +40,8 @@ interface Toast {
   n: number; // сколько комет поймано всего
 }
 
-/** Функции ПК: кнопки в правом нижнем углу (звук и «наверх» с кольцом прогресса), уведомление
- *  о пойманной комете справа под шапкой, секретное слово и звуки интерфейса.
+/** Функции ПК: кнопки в правом нижнем углу (музыка и «наверх» с кольцом прогресса), карточка плеера,
+ *  уведомление о пойманной комете справа под шапкой, секретное слово и звуки интерфейса.
  *  На телефоне и планшете ничего не рендерит. */
 export function Extras({ t }: { t: Dict["fun"] }) {
   const pc = useSyncExternalStore(subPc, isPc, () => false);
@@ -159,6 +160,8 @@ function ExtrasPC({ t }: { t: Dict["fun"] }) {
           </span>
         </button>
       </div>
+
+      <Music t={t} />
 
       <div className="toasts" role="status" aria-live="polite">
         {toasts.map((x) => (
