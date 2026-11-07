@@ -149,7 +149,7 @@ function ExtrasPC({ t }: { t: Dict["fun"] }) {
           aria-pressed={sound}
           aria-label={t.sound}
           data-on={sound || undefined}
-          data-cursor={sound ? t.soundOff : t.soundOn}
+          data-cursor={t.sound}
           onClick={toggleSound}
         >
           <span className="eq" aria-hidden="true">
