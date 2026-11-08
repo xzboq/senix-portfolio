@@ -11,6 +11,7 @@ import { Cursor } from "@/components/Cursor";
 import { Extras } from "@/components/Extras";
 import { Flight } from "@/components/Flight";
 import { Nebula } from "@/components/Nebula";
+import { Planets } from "@/components/Planets";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Stardust } from "@/components/Stardust";
 import { Warp } from "@/components/Warp";
@@ -105,6 +106,7 @@ export default async function RootLayout({
           </div>
           <Nebula />
           <Warp />
+          <Planets />
           <div className="bg-glow" />
           <div className="bg-noise" />
         </div>
